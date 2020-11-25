@@ -6,25 +6,25 @@ from flask_login import UserMixin, current_user, logout_user
 
 
 # VIEW ADMIN
-class BaseAdmin(BaseView):
+class IsAuthenticated(BaseView):
     def is_accessible(self):
         return current_user.is_authenticated
 
 
-class ChangeRuleView(BaseAdmin):
+class ChangeRuleView(IsAuthenticated):
     @expose("/")
     def index(self):
         return self.render('admin/doiquydinh.html')
 
 
-class LogoutView(BaseAdmin):
+class LogoutView(IsAuthenticated):
     @expose('/')
     def index(self):
         logout_user()
         return redirect('/admin')
 
 
-class ReportView(BaseAdmin):
+class ReportView(IsAuthenticated):
     @expose('/')
     def index(self):
         return self.render('admin/report.html')

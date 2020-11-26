@@ -18,6 +18,11 @@ def login_admin():
     return redirect("/admin")
 
 
+@app.route('/')
+def route_default():
+    return render_template('login.html')
+
+
 @login.user_loader
 def user_load(user_id):
     return User.query.get(user_id)

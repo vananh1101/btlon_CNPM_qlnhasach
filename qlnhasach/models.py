@@ -24,13 +24,13 @@ class QLBaseV1(db.Model):
         return self.name
 
 
-# USER TABLE
 class UserRole(UserEnum):
     ADMIN = 1
     Thu_kho = 2
     Thu_ngan = 3
 
 
+# BẢNG USER
 class User(QLBase, UserMixin):
     __tablename__ = 'user'
 
@@ -42,6 +42,12 @@ class User(QLBase, UserMixin):
     joined_date = Column(Date, default=datetime.now())
     user_role = Column(Enum(UserRole), nullable=False)
 
+    # QUAN HỆ 1-N VỚI BẢNG PHIỂU THU TIỀN
+    phieu_thu = relationship('PhieuThuTien', backref='user', lazy=True)
+
+    # QUAN HỆ 1-N VỚI BẢNG PHIẾU NHẬP SÁCH
+    phieu_nhap_sach = relationship('PhieuNhapSach', backref='user', lazy=True)
+
 
 # BẢNG KHÁCH HÀNG
 class KhachHang(QLBase):
@@ -50,7 +56,12 @@ class KhachHang(QLBase):
     ngaysinh = Column(Date)
     diachi = Column(String(150))
     dienthoai = Column(String(11))
-    hoadon = relationship('HoaDon', backref='hoadon', lazy=True)
+
+    # QUAN HỆ 1-N VỚI BẢNG HOÁ ĐƠN
+    hoadon = relationship('HoaDon', backref='khachhang', lazy=True)
+
+    # QUAN HỆ 1-N VỚI BẢNG PHIỂU THU TIỀN
+    phieu_thu_tien = relationship('PhieuThuTien', backref='khachhang', lazy=True)
 
 
 # BẢNG SÁCH
@@ -62,6 +73,13 @@ class Sach(QLBase):
     dongia = Column(Float, nullable=False)
     soluong = Column(Integer, nullable=False)
 
+    # QUAN HỆ 1-N VỚI BẢNG CHI TIẾT HOÁ ĐƠN
+    chi_tiet_hoa_don = relationship('ChiTietHoaDon',
+                                    backref='sach', lazy=True)
+
+    # QUAN HỆ 1-N VỚI BẢNG CHI TIẾT PHIẾU NHẬP SÁCH
+    chi_tiet_phieu_nhap = relationship('ChiTietPhieuNhap', backref='sach', lazy=True)
+
 
 # BẢNG HOÁ ĐƠN
 class HoaDon(QLBaseV1):
@@ -72,19 +90,22 @@ class HoaDon(QLBaseV1):
     # KHOÁ NGOẠI BẢNG KHÁCH HÀNG( QUAN HỆ 1-N)
     id_khachhang = Column(Integer, ForeignKey('khachhang.id'), nullable=False)
 
-    # KHOÁ NGOẠI BẢNG SÁCH( QUAN HỆ N-N)
-    chitiet = relationship('Sach', secondary='hoadon', lazy='subquery',
-                           backref=backref('id', lazy=True))
+    # QUAN HỆ 1-N VỚI BẢNG CHI TIẾT HOÁ ĐƠN
+    chi_tiet = relationship('ChiTietHoaDon',
+                            backref='hoadon', lazy=True)
 
 
-# THIẾT LẬP QUAN HỆ MANY-TO-MANY BẢNG HOÁ ĐƠN - SÁCH
-chi_tiet = db.Table('chitiethoadon',
-                    Column('id_sach', Integer,
-                           ForeignKey('sach.id'), primary_key=True),
-                    Column('id_hoadon', Integer,
-                           ForeignKey('hoadon.id'), primary_key=True),
-                    Column('soluong', Integer, nullable=False),
-                    Column('dongia', Float, nullable=False))
+# BẢNG CHI TIẾT HOÁ ĐƠN
+class ChiTietHoaDon(QLBaseV1):
+    __tablename__ = 'chitiethoadon'
+
+    soluongmua = Column(Integer, nullable=False)
+    dongia = Column(Float, nullable=False)
+    # KHOÁ NGOẠI BẢNG HOÁ ĐƠN- SÁCH (1-N)
+    id_sach = Column(Integer, ForeignKey('sach.id'), nullable=False)
+
+    # KHOÁ NGOẠI BẢNG HOÁ ĐƠN (1-N)
+    id_hoadon = Column(Integer, ForeignKey('hoadon.id'), nullable=False)
 
 
 # BẢNG LẬP PHIẾU NHẬP SÁCH
@@ -93,13 +114,38 @@ class PhieuNhapSach(QLBaseV1):
 
     ngay_nhap = Column(Date, default=datetime.now())
 
-    # KHOÁ NGOẠI BẢNG KHÁCH HÀNG( QUAN HỆ 1-N)
-    id_thukho = Column(Integer, ForeignKey('id'), nullable=False)
+    # KHOÁ NGOẠI BẢNG USER( QUAN HỆ 1-N)
+    id_thukho = Column(Integer, ForeignKey('user.id'), nullable=False)
 
-    # KHOÁ NGOẠI BẢNG SÁCH( QUAN HỆ N-N)
+    # QUAN HỆ 1-N VỚI BẢNG CHI TIẾT PHIẾU NHẬP SÁCH
+    chi_tiet_nhap = relationship('ChiTietPhieuNhap',backref='sach', lazy=True)
 
-    
 
+# BẢNG LẬP PHIẾU THU TIỀN
+class PhieuThuTien(QLBaseV1):
+    __tablename__ = 'phieuthutien'
+
+    ngaythutien = Column(Date, nullable=False)
+    tongtienthu = Column(Float, nullable=False)
+
+    # KHOÁ NGOẠI VỚI BẢNG USER
+    id_user = Column(Integer, ForeignKey('user.id'), nullable=False)
+
+    # KHOÁ NGOẠI VỚI BẢNG KHÁCH HÀNG
+    id_khachhang = Column(Integer, ForeignKey('khachhang.id'), nullable=False)
+
+
+# BẢNG CHI TIẾT PHIẾU THU TIỀN
+class ChiTietPhieuNhap(QLBaseV1):
+    __tablename__ = 'chitietnhapphíeusach'
+
+    soluongnhap = Column(Integer, nullable=False)
+
+    # KHOÁ NGOẠI VỚI BẢNG PHIẾU NHẬP SÁCH
+    id_phieu = Column(Integer, ForeignKey('phieunhapsach.id'), nullable=False)
+
+    # KHOÁ NGOẠI VỚI BẢNG SÁCH
+    id_sachnhap = Column(Integer, ForeignKey('sach.id'), nullable=False)
 
 
 if __name__ == "__main__":

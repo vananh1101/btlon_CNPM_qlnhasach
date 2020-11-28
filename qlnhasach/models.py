@@ -118,7 +118,7 @@ class PhieuNhapSach(QLBaseV1):
     id_thukho = Column(Integer, ForeignKey('user.id'), nullable=False)
 
     # QUAN HỆ 1-N VỚI BẢNG CHI TIẾT PHIẾU NHẬP SÁCH
-    chi_tiet_nhap = relationship('ChiTietPhieuNhap',backref='sach', lazy=True)
+    chi_tiet_nhap = relationship('ChiTietPhieuNhap',backref='phieunhapsach', lazy=True)
 
 
 # BẢNG LẬP PHIẾU THU TIỀN

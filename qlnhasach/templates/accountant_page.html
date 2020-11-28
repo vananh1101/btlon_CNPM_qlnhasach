@@ -1,8 +1,7 @@
 {% extends 'login.html' %}
  {% block content %}
     {% if current_user.is_authenticated %}
-        <h1>HÊLo</h1>
     {% else %}
-       <h4>Chào mừng Admin</h4>
+       <h4>Chào mừng đến trang kế toán</h4>
     {% endif %}
 {% endblock content %}

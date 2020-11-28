@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="apple-touch-icon" sizes="76x76" href="/static/assets/img/apple-icon.png">
+  <link rel="icon" type="image/png" href="/static/assets/img/favicon.png">
+  <title>
+    Đăng nhập
+  </title>
+  <!--     Fonts and icons     -->
+  <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,600,700,800" rel="stylesheet" />
+  <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+  <!-- Nucleo Icons -->
+  <link href="/static/assets/css/css_main.css" rel="stylesheet" />
+
+
+</head>
+
+<body class="">
+  <div class="wrapper">
+    {% include 'sidebar.html' %}
+    <div class="main-panel">
+
+      {% include 'Search_toolbar.html' %}
+
+      <div class="content">
+{% block content %}
+        <div class="row">
+          <div class="col-md-8">
+            <div class="card">
+
+              <form role="form" method="post" action="url_for('login') }}">
+                <div class="card-header">
+                  <h5 class="title">Đăng nhập</h5>
+
+                  <h6 class="card-category">
+                    {% if msg %}
+                        {{ msg | safe }}
+                    {% endif %}
+                  </h6>
+                </div>
+
+                <div class="card-body" >
+
+                    <div class="row">
+
+                      <div class="col-md-3 px-md-1">
+                        <div class="form-group">
+                          <label>Tên đăng </label>
+                          <input type="text" placeholder="Nhập tên đăng nhập", class="form-control" name="username">
+                        </div>
+                      </div>
+
+                    </div>
+                    <div class="row">
+
+                      <div class="col-md-3 px-md-1">
+                        <div class="form-group">
+                          <label>Mật khẩu</label>
+                          <input type="password" placeholder="Nhập mật khẩu", class="form-control" name="password">
+                        </div>
+                      </div>
+
+                    </div>
+
+                </div>
+                <div class="card-footer">
+                  <button type="submit" name="login" class="btn btn-fill btn-primary">Đăng nhập</button>
+                  &nbsp; &nbsp;
+                </div>
+
+              </form>
+
+            </div>
+          </div>
+        {% endblock content %}
+      </div>
+
+
+      </div>
+
+      {% include 'footer.html' %}
+
+    </div>
+
+  </div>
+
+  {% include 'fixed-plugin.html' %}
+
+  {% include 'scripts.html' %}
+
+  {% include 'scripts-sidebar.html' %}
+
+
+</body>
+
+</html>

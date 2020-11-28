@@ -1,0 +1,23 @@
+
+
+    <div class="sidebar">
+      <div class="sidebar-wrapper">
+        <div class="logo">
+          <a class="simple-text logo-normal">
+            Các tác vụ hiện tại
+          </a>
+        </div>
+       {% if current_user.is_authenticated %}
+     <li >
+         <a href="#">
+             <i class="tim-icons icon-chart-pie-36"></i>
+             <p></p>
+         </a>
+     </li>
+      {% endif %}
+        <ul class="nav">
+    {% block content%}{% endblock content %}
+        </ul>
+        
+      </div>
+    </div>

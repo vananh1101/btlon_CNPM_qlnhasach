@@ -1,0 +1,10 @@
+{% extends 'login.html' %}
+ {% block sidebar %}
+     {%include 'sidebar.html' %}
+{% endblock sidebar %}
+ {% block content %}
+    {% if current_user.is_authenticated %}
+    {% else %}
+       <h4>Chào mừng kế toán</h4>
+    {% endif %}
+{% endblock content %}

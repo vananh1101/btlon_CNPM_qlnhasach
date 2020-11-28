@@ -1,10 +1,7 @@
-{% extends 'admin/master.html' %}
-
-{% block body%}
-
+{% extends 'login.html' %}
+ {% block content %}
     {% if current_user.is_authenticated %}
     {% else %}
-       {%include 'admin/login.html' %}
+       <h4>Chào mừng Admin</h4>
     {% endif %}
-
-{% endblock %}
+{% endblock content %}

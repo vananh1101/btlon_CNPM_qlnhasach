@@ -13,46 +13,36 @@
   <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,600,700,800" rel="stylesheet" />
   <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
   <!-- Nucleo Icons -->
-  <link href="/static/assets/css/nucleo-icons.css" rel="stylesheet" />
-  <!-- CSS Files -->
-  <link href="/static/assets/css/black-dashboard.css?v=1.0.0" rel="stylesheet" />
-  <!-- CSS Just for demo purpose, don't include it in your project -->
-  <link href="/static/assets/demo/demo.css" rel="stylesheet" />
+  <link href="/static/assets/css/css_main.css" rel="stylesheet" />
 
-  <!-- Specific Page CSS goes HERE  -->
-  {% block stylesheets %}{% endblock stylesheets %}
 
 </head>
 
 <body class="">
   <div class="wrapper">
-
     {% include 'sidebar.html' %}
-
     <div class="main-panel">
 
-      {% include 'navigation.html' %}
+      {% include 'Search_toolbar.html' %}
 
       <div class="content">
-
+{% block content %}
         <div class="row">
           <div class="col-md-8">
             <div class="card">
 
-              <form role="form" method="post" action="">
+              <form role="form" method="post" action="url_for('login') }}">
                 <div class="card-header">
-                  <h5 class="title">Login</h5>
+                  <h5 class="title">Đăng nhập</h5>
 
                   <h6 class="card-category">
                     {% if msg %}
                         {{ msg | safe }}
-                    {% else %}
-                        Default Credentials: test / pass
                     {% endif %}
                   </h6>
                 </div>
 
-                <div class="card-body">
+                <div class="card-body" >
 
                     <div class="row">
 
@@ -85,6 +75,7 @@
 
             </div>
           </div>
+        {% endblock content %}
       </div>
 
 
@@ -102,17 +93,7 @@
 
   {% include 'scripts-sidebar.html' %}
 
-  <!-- Specific Page JS goes HERE  -->
-  {% block javascripts %}{% endblock javascripts %}
 
 </body>
 
 </html>
-
-
-
-
-
-
-
-

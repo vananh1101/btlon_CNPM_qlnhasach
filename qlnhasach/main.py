@@ -46,11 +46,11 @@ def route_logout():
     return redirect(url_for('login'))
 
 
-@app.route('/ketoan')
-def route_ketoan():
-    return render_template('ketoan/accountant_page.html')
-
-
+# @app.route('/ketoan')
+# def route_ketoan():
+#     return render_template('ketoan/accountant_page.html')
+#
+#
 @app.route('/thukho')
 def route_accountant():
     return render_template('thukho/stocker_page.html')

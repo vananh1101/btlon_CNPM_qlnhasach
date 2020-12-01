@@ -1,5 +1,5 @@
-from qlnhasach import admin
-from qlnhasach.models import UserRole
+from qlnhasach import admin, db
+from qlnhasach.models import UserRole, Sach, ChiTietPhieuNhap, PhieuNhapSach, PhieuThuTien
 from flask import redirect, url_for
 from flask_admin.contrib.sqla import ModelView
 from flask_admin import BaseView, expose
@@ -12,28 +12,21 @@ class IsAuthenticated(BaseView):
 
 
 # VIEW ADMIN
-class AdminView(IsAuthenticated):
+class AdminView(BaseView):
     def is_accessible(self):
         return current_user.is_authenticated and current_user.user_role == UserRole.ADMIN
 
 
 # VIEW THỦ KHO
-class ThuKhoView(IsAuthenticated):
+class ThuKhoView(ModelView, AdminView):
     def is_accessible(self):
         return current_user.is_authenticated and current_user.user_role == UserRole.Thu_kho
 
 
 # VIEW KẾ TOÁN
-class ThuNganView(IsAuthenticated):
+class ThuNganView(ModelView):
     def is_accessible(self):
         return current_user.is_authenticated and current_user.user_role == UserRole.Thu_ngan
-
-
-# VIEW LẬP PHIẾU NHẬP SÁCH CỦA THỦ KHO
-class NhapSachView(AdminView, ThuKhoView):
-    @expose("/")
-    def index(self):
-        return self.render("thukho/phieunhapsach.html")
 
 
 # VIEW THAY ĐỔI QUY ĐỊNH CỦA ADMIN
@@ -52,21 +45,26 @@ class LogoutView(IsAuthenticated):
 
 
 # VIEW LẬP BÁO CÁO CỦA KẾ TOÁN
-class BaoCaoView(AdminView, ThuNganView):
+class BaoCaoView(AdminView):
     @expose('/')
     def index(self):
-        return self.render('ketoan/lapbaocao.html')
+        return self.render('admin/doiquydinh.html')
 
 
 # VIEW TRA CỨU
-class TraCuuView(BaseView):
-    @expose("/")
-    def index(self):
-        return self.render('admin/tracuu.html')
+# class TraCuuView(BaseView):
+#     @expose("/")
+#     def index(self):
+#         return self.render('admin/tracuu.html')
+
+# class KeToanAuthen(ModelView):
+#     def is_accessible(self):
+#         return current_user.is_authenticated and
 
 
 admin.add_view(ChangeRuleView(name="Thay đổi quy định"))
-admin.add_view(TraCuuView(name="Tra cứu sách"))
+# admin.add_view(AdminView(name="Tra cứu sách",))
 admin.add_view(BaoCaoView(name="Báo cáo tháng"))
-admin.add_view(NhapSachView(name="Phieu nhap sach"))
+admin.add_view(ThuNganView(PhieuNhapSach, db.session))
+admin.add_view(ThuKhoView(ChiTietPhieuNhap, db.session))
 admin.add_view(LogoutView(name="Đăng xuất"))

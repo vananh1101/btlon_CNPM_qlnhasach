@@ -1,0 +1,9 @@
+{% extends 'login.html' %}
+
+{% block content %}
+    {% if current_user.is_authenticated %}
+        <h1>chào mừng đến trang kế toán</h1>
+    {% else %}
+        <h2>Lỗi</h2>
+    {% endif %}
+{% endblock content %}

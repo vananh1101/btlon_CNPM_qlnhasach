@@ -41,7 +41,7 @@ class LogoutView(IsAuthenticated):
     @expose('/')
     def index(self):
         logout_user()
-        return redirect(url_for('/login'))
+        return redirect(url_for('route_main'))
 
 
 # VIEW LẬP BÁO CÁO CỦA KẾ TOÁN

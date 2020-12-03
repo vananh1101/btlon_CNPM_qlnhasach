@@ -1,9 +1,11 @@
 from flask_login import login_user, login_manager
 from flask import render_template, redirect, request, url_for
-from qlnhasach import app, login, models
+from qlnhasach import app, login, models, untils
 from qlnhasach.admin import *
-from qlnhasach.models import User
+from qlnhasach.models import User, KhachHang
 import hashlib, os
+from qlnhasach.untils import add_costumer
+from datetime import datetime
 # @app.route('/login-admin', methods=["post", "get"])
 # def login_admin():
 #     if request.method == "POST":
@@ -42,47 +44,68 @@ def route_login():
 @app.route('/register', methods=['GET', 'POST'])
 def route_register():
     if request.method == 'POST':
-        name = request.form.get('name')
-        email = request.form.get('email')
-        username = request.form.get('username')
-        password = request.form.get('password', '').strip()
-        confirm_password = request.form.get('confirm_password', '').strip()
+        name = request.form.get('re_name')
+        username = request.form.get('re_username')
+        password = request.form.get('re_password', '').strip()
+        confirm_password = request.form.get('re_confirm_password')
+        datetime_object = request.form.get('re_date','').strip()
+        location = request.form.get('re_location')
+        phone = str(request.form.get('re_phone'))
+
 
         #KIểm tra trùng tên
-        user = User.query.filter_by(username=username).first()
-        if user:
+        Khach = KhachHang.query.filter_by(username=username).first()
+        if Khach:
             return render_template( 'register.html',
                                     msg='Tên tài khoản đã được sử dụng',
-                                    success=False)
+                                success=False)
 
-        # kiểm tra trùng
-        user = User.query.filter_by(email=email).first()
-        if user:
-            return render_template( 'register.html',
-                                    msg='Email đã được sử dụng',
-                                    success=False)
+
+        #Kiểm tra nếu số điện thoại đã được đăng kí
+        Khach = KhachHang.query.filter_by(dienthoai=phone).first()
+        if Khach:
+            return render_template('register.html',
+                                   msg='Số điện thoại đã được đăng kí',
+                                   success=False)
+
+
         #kiểm tra rỗng
         if name =='':
             return render_template('register.html',
-                                   msg='Tên không được rỗng',
+                                   msg='Tên không được trống',
                                    success=False)
-        # kiểm tra cú pháp email
-
-
+        if username=='':
+            return render_template('register.html',
+                                   msg='Tên đăng nhập khônd được trống',
+                                   success=False)
+        if password=='':
+            return render_template('register.html',
+                                   msg='Mật khẩu không được trống',
+                                   success=False)
+        if phone=='':
+            return render_template('register.html',
+                                   msg='Số điện thoại không được trống',
+                                   success=False)
+        if location=='':
+            return render_template('register.html',
+                                   msg='Địa chỉ không được trống',
+                                   success=False)
+        if datetime_object=='':
+            return render_template('register.html',
+                                   msg='Ngày sinh không được trống',
+                                   success=False)
+        #kiểm tra nếu 2 pass word không trùng nhau
+        if password != confirm_password:
+            return render_template('register.html',
+                                   msg='Xác nhận mật khẩu sai, hãy thử lại',
+                                   success=False)
         # tạo user
-        avatar = request.files["avatar"]
-        avatar_path = 'images/upload/%s' % avatar.filename
-        avatar.save(os.path.join(app.config['ROOT_PROJECT_PATH'],
-                                 'static/', avatar_path))
-
-        if models.add_user(name=name, email=email, username=username,
-                          password=password, avatar=avatar_path):
+        if untils.add_costumer(name=name, username=username, diachi=location, ngaysinh=datetime_object,
+                         dienthoai=phone, password=password):
             return redirect('/admin')
-
-        return render_template( 'accounts/register.html',
+        return render_template( 'register.html',
                                 msg='User created please <a href="/login">login</a>',
                            success=True)
-
     else:
         return render_template( 'register.html')
 

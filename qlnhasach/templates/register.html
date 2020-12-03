@@ -12,7 +12,6 @@
               <form role="form" method="post" action="{{ url_for('route_register') }}">
 
                 <div class="card-header">
-                  <h5 class="title">Đăng kí</h5>
 
                   <h6 class="card-category">
                     {% if msg %}
@@ -22,12 +21,11 @@
                 </div>
 
                 <div class="card-body">
-
                     <div class="row">
                       <div class="col-md-3 px-md-1">
                         <div class="form-group">
-                          <label>Tên đăng nhập</label>
-                          <input type="text" placeholder="Nhập tên đăng nhập", class="form-control" name="username">
+                          <label>Tên người dùng</label>
+                          <input type="text" placeholder="Nhập tên:" class="form-control" name="re_name" >
                         </div>
                       </div>
                     </div>
@@ -35,8 +33,34 @@
                     <div class="row">
                       <div class="col-md-3 px-md-1">
                         <div class="form-group">
-                          <label>Email</label>
-                          <input type="email" placeholder="Nhập tên đăng nhập", class="form-control" name="email">
+                          <label>Tên đăng nhập</label>
+                          <input type="text" placeholder="Nhập tên đăng nhập:" class="form-control" name="re_username" id="re_username">
+                        </div>
+                      </div>
+                    </div>
+
+                     <div class="row">
+                      <div class="col-md-3 px-md-1">
+                        <div class="form-group">
+                          <label>Địa chỉ </label>
+                          <input type="text" placeholder="Nhập địa chỉ:" class="form-control" name="re_location">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-3 px-md-1">
+                        <div class="form-group">
+                          <label>Số điện thoại </label>
+                          <input type="text" placeholder="Nhập số điện thoại:" class="form-control" name="re_phone">
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-md-3 px-md-1">
+                        <div class="form-group">
+                          <label>Ngày sinh</label>
+                            <input type="date" placeholder="Ngày sinh", class="form-control" name="re_date" id="re_"date>
                         </div>
                       </div>
                     </div>
@@ -45,7 +69,7 @@
                       <div class="col-md-3 px-md-1">
                         <div class="form-group">
                           <label>Mật khẩu</label>
-                          <input type="password" placeholder="Nhập mật khẩu", class="form-control" name="password">
+                          <input type="password" placeholder="Nhập mật khẩu", class="form-control" name="re_password" id="re_password">
                         </div>
                       </div>
                     </div>
@@ -54,18 +78,9 @@
                       <div class="col-md-3 px-md-1">
                         <div class="form-group">
                           <label>Xác nhận mật khẩu</label>
-                            <input type="password" placeholder="Xác nhận mật khẩu", class="form-control" name="confirm_password">
+                            <input type="password" placeholder="Xác nhận mật khẩu", class="form-control" name="re_confirm_password" id="re_confirm_password">
                         </div>
                       </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-md-3 px-md-1">
-                         <label for="avatar">Ảnh đại diện</label>
-                         <input type="file"
-                                id="avatar"
-                                name="avatar"
-                                class="form-control" />
-                     </div>
                     </div>
                 </div>
                 <div class="card-footer">

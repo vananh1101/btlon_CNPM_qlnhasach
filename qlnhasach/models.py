@@ -56,6 +56,8 @@ class KhachHang(QLBase):
     ngaysinh = Column(Date)
     diachi = Column(String(150))
     dienthoai = Column(String(11))
+    username = Column(String(100), nullable=False)
+    password = Column(String(100), nullable=False)
 
     # QUAN HỆ 1-N VỚI BẢNG HOÁ ĐƠN
     hoadon = relationship('HoaDon', backref='khachhang', lazy=True)

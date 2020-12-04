@@ -1,22 +1,9 @@
 from flask_login import login_user, login_manager
 from flask import render_template, redirect, request, url_for
-from qlnhasach import app, login
+from qlnhasach import app, login, utils
 from qlnhasach.admin import *
 from qlnhasach.models import User
 import hashlib
-
-
-# @app.route('/login-admin', methods=["post", "get"])
-# def login_admin():
-#     if request.method == "POST":
-#         username = request.form.get("username")
-#         password = str(hashlib.md5(request.form.get("password").strip().encode("utf-8")).hexdigest())
-#         user = User.query.filter(User.username == username.strip(),
-#                                  User.password == password).first()
-#         if user:
-#             login_user(user=user)
-#         return render_template('login.html')
-#     return redirect("/admin")
 
 
 @app.route('/')
@@ -28,32 +15,26 @@ def route_main():
 def route_login():
     if request.method == "POST":
         username = request.form.get("username")
-        password = str(hashlib.md5(request.form.get("password").strip().encode("utf-8")).hexdigest())
-        user = User.query.filter(User.username == username,
+        password = request.form.get("password")
+        password = str(hashlib.md5(password.encode('utf-8')).hexdigest())
+        user = User.query.filter(User.username == username.strip(),
                                  User.password == password).first()
 
         if user:
             login_user(user=user)
+            return redirect('/admin')
 
     # elif request.method == 'GET':
     #     print(request.url)
-    return redirect('/admin')
+    #     return render_template('login.html')
+    # elif request.method == 'GET':
+    #     print(request.url)
 
 
-@app.route('/logout')
+@app.route('/')
 def route_logout():
     logout_user()
-    return redirect(url_for('login'))
-
-
-# @app.route('/ketoan')
-# def route_ketoan():
-#     return render_template('ketoan/accountant_page.html')
-#
-#
-@app.route('/thukho')
-def route_accountant():
-    return render_template('thukho/stocker_page.html')
+    return redirect(url_for('/login'))
 
 
 @login.user_loader
@@ -61,5 +42,18 @@ def user_load(user_id):
     return User.query.get(user_id)
 
 
-if __name__ == "__main__":
+# @app.route('/sach')
+# def book_list():
+#     dssach = utils.read_data()
+#     return render_template('danhsachsach.html', dssach=dssach)
+
+
+@app.route('/user')
+def home():
+    dssach = utils.read_data()
+    return render_template('client/home.html', dssach=dssach)
+
+
+if __name__ == \
+        "__main__":
     app.run(debug=True, port=4000)

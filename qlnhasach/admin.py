@@ -12,15 +12,15 @@ class IsAuthenticated(BaseView):
 
 
 # VIEW ADMIN
-class AdminView(BaseView):
+class AdminView(ModelView):
     def is_accessible(self):
         return current_user.is_authenticated and current_user.user_role == UserRole.ADMIN
 
 
-# VIEW THỦ KHO
-class ThuKhoView(ModelView, AdminView):
-    def is_accessible(self):
-        return current_user.is_authenticated and current_user.user_role == UserRole.Thu_kho
+# # VIEW THỦ KHO
+# class ThuKhoView(ModelView, AdminView):
+#     def is_accessible(self):
+#         return current_user.is_authenticated and current_user.user_role == UserRole.Thu_kho
 
 
 # VIEW KẾ TOÁN
@@ -62,9 +62,11 @@ class BaoCaoView(AdminView):
 #         return current_user.is_authenticated and
 
 
-admin.add_view(ChangeRuleView(name="Thay đổi quy định"))
-# admin.add_view(AdminView(name="Tra cứu sách",))
-admin.add_view(BaoCaoView(name="Báo cáo tháng"))
-admin.add_view(ThuNganView(PhieuNhapSach, db.session))
-admin.add_view(ThuKhoView(ChiTietPhieuNhap, db.session))
-admin.add_view(LogoutView(name="Đăng xuất"))
+# admin.add_view(ChangeRuleView(name="Thay đổi quy định"))
+# # admin.add_view(AdminView(name="Tra cứu sách",))
+# admin.add_view(BaoCaoView(name="Báo cáo tháng"))
+# admin.add_view(ThuNganView(PhieuNhapSach, db.session))
+# admin.add_view(ThuKhoView(ChiTietPhieuNhap, db.session))
+# admin.add_view(LogoutView(name="Đăng xuất"))
+admin.add_view(AdminView(PhieuNhapSach, db.session))
+admin.add_view(AdminView(ChiTietPhieuNhap, db.session))

@@ -50,7 +50,7 @@ class User(QLBase, UserMixin):
 
 
 # BẢNG KHÁCH HÀNG
-class KhachHang(QLBase):
+class KhachHang(QLBase, UserMixin):
     __tablename__ = 'khachhang'
 
     ngaysinh = Column(Date)

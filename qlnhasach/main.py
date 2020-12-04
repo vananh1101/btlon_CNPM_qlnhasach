@@ -1,5 +1,5 @@
 from flask_login import login_user, login_manager
-from flask import render_template, redirect, request, url_for
+from flask import render_template, redirect, request, url_for, session
 from qlnhasach import app, login, models, untils
 from qlnhasach.admin import *
 from qlnhasach.models import User, KhachHang
@@ -30,15 +30,17 @@ def route_login():
 
         username = request.form.get("username")
         password = str(hashlib.md5(request.form.get("password").strip().encode("utf-8")).hexdigest())
-        user = User.query.filter(User.username == username,
-                                 User.password == password).first()
+        user = User.query.filter(User.username == username, User.password == password).first()
+        costumer = KhachHang.query.filter(KhachHang.username == '#KH_'+username, KhachHang.password == password).first()
         if user:
             login_user(user=user)
             return redirect('/admin')
-        return render_template('login.html', msg='Tài khoản hoặc mật khẩu không đúng, hãy thử lại')
-    return redirect('/admin')
-    # elif request.method == 'GET':
-    #     print(request.url)
+        if costumer:
+            login_user(costumer)
+            return redirect('/home')
+        else:
+            return render_template('login.html', msg='Tài khoản hoặc mật khẩu không đúng, hãy thử lại')
+    return redirect('/')
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -68,42 +70,16 @@ def route_register():
                                    msg='Số điện thoại đã được đăng kí',
                                    success=False)
 
-
-        #kiểm tra rỗng
-        if name =='':
-            return render_template('register.html',
-                                   msg='Tên không được trống',
-                                   success=False)
-        if username=='':
-            return render_template('register.html',
-                                   msg='Tên đăng nhập khônd được trống',
-                                   success=False)
-        if password=='':
-            return render_template('register.html',
-                                   msg='Mật khẩu không được trống',
-                                   success=False)
-        if phone=='':
-            return render_template('register.html',
-                                   msg='Số điện thoại không được trống',
-                                   success=False)
-        if location=='':
-            return render_template('register.html',
-                                   msg='Địa chỉ không được trống',
-                                   success=False)
-        if datetime_object=='':
-            return render_template('register.html',
-                                   msg='Ngày sinh không được trống',
-                                   success=False)
-        #kiểm tra nếu 2 pass word không trùng nhau
-        if password != confirm_password:
+        if phone.isalpha()== True:
             return render_template('register.html',
                                    msg='Xác nhận mật khẩu sai, hãy thử lại',
                                    success=False)
+
         # tạo user
-        if untils.add_costumer(name=name, username=username, diachi=location, ngaysinh=datetime_object,
+        if untils.add_costumer(name=name, username='#KH_'+username, diachi=location, ngaysinh=datetime_object,
                          dienthoai=phone, password=password):
-            return redirect('/admin')
-        return render_template( 'register.html',
+            return redirect('/')
+        return render_template( 'login.html',
                                 msg='User created please <a href="/login">login</a>',
                            success=True)
     else:

@@ -20,7 +20,7 @@
                   </h6>
                 </div>
 
-                <div class="card-body">
+                <div class="card-body" onload="validBirthday()">
                     <div class="row">
                       <div class="col-md-3 px-md-1">
                         <div class="form-group">
@@ -35,7 +35,7 @@
                       <div class="col-md-3 px-md-1">
                         <div class="form-group">
                           <label>Tên đăng nhập</label>
-                          <input type="text" reqiure placeholder="Nhập tên đăng nhập:" class="form-control" name="re_username">
+                          <input type="text" required placeholder="Nhập tên đăng nhập:" class="form-control" name="re_username">
                         </div>
                       </div>
                     </div>
@@ -52,7 +52,8 @@
                       <div class="col-md-3 px-md-1">
                         <div class="form-group">
                           <label>Số điện thoại </label>
-                          <input type="tel" required placeholder="Nhập số điện thoại:" class="form-control" name="re_phone">
+                          <input type="tel" required placeholder="Nhập số điện thoại:"
+                                 pattern="[0-9]{10}"  class="form-control" name="re_phone">
                         </div>
                       </div>
                     </div>
@@ -61,7 +62,7 @@
                       <div class="col-md-3 px-md-1">
                         <div class="form-group">
                           <label>Ngày sinh</label>
-                            <input  m="2021-12-31"type="date" required placeholder="Ngày sinh", class="form-control"
+                            <input  type="date" max="20--10" required placeholder="Ngày sinh" class="form-control"
                                    name="re_date" id="re_date" >
                         </div>
                       </div>
@@ -71,7 +72,7 @@
                       <div class="col-md-3 px-md-1">
                         <div class="form-group">
                           <label>Mật khẩu</label>
-                          <input type="password" required placeholder="Nhập mật khẩu", id ="re_password" class="form-control" name="re_password">
+                          <input type="password" required placeholder="Nhập mật khẩu" id ="re_password" class="form-control" name="re_password">
                         </div>
                       </div>
                     </div>
@@ -80,7 +81,7 @@
                       <div class="col-md-3 px-md-1">
                         <div class="form-group">
                           <label>Xác nhận mật khẩu</label>
-                            <input type="password" required placeholder="Xác nhận mật khẩu", id="re_confirm_password" class="form-control"
+                            <input type="password" required placeholder="Xác nhận mật khẩu" id="re_confirm_password" class="form-control"
                                    name="re_confirm_password">
                         </div>
                       </div>

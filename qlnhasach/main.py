@@ -72,7 +72,7 @@ def route_register():
 
         if phone.isalpha()== True:
             return render_template('register.html',
-                                   msg='Xác nhận mật khẩu sai, hãy thử lại',
+                                   msg='Số điện thoại không hợp lệ',
                                    success=False)
 
         # tạo user
@@ -105,6 +105,21 @@ def route_accountant():
 @login.user_loader
 def user_load(user_id):
     return User.query.get(user_id)
+
+
+@app.login_manager.unauthorized_handler
+def unauthorized_handler():
+    return render_template('page-403.html'), 403
+
+
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('page-404.html'),404
+
+
+@app.errorhandler(403)
+def not_found_error(error):
+    return render_template('page-403.html'),403
 
 
 if __name__ == "__main__":

@@ -3,7 +3,7 @@ from qlnhasach.models import UserRole, Sach, ChiTietPhieuNhap, PhieuNhapSach, Ph
 from flask import redirect, url_for
 from flask_admin.contrib.sqla import ModelView
 from flask_admin import BaseView, expose
-from flask_login import UserMixin, current_user, logout_user
+from flask_login import UserMixin, current_user, logout_user, login_required
 
 
 class IsAuthenticated(BaseView):
@@ -31,6 +31,7 @@ class ThuNganView(ModelView):
 
 # VIEW THAY ĐỔI QUY ĐỊNH CỦA ADMIN
 class ChangeRuleView(AdminView):
+    @login_required
     @expose("/")
     def index(self):
         return self.render('admin/doiquydinh.html')
@@ -38,10 +39,11 @@ class ChangeRuleView(AdminView):
 
 # VIEW LOGOUT
 class LogoutView(IsAuthenticated):
+    @login_required
     @expose('/')
     def index(self):
         logout_user()
-        return redirect(url_for('route_main'))
+        return redirect('/login')
 
 
 # VIEW LẬP BÁO CÁO CỦA KẾ TOÁN

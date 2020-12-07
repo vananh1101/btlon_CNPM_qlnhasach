@@ -18,47 +18,24 @@
             <span class="navbar-toggler-bar navbar-kebab"></span>
             <span class="navbar-toggler-bar navbar-kebab"></span>
           </button>
-          <div class="collapse navbar-collapse" id="navigation">
-             <ul class="navbar-nav ml-auto">
-                <li class="search-bar input-group">
-                  <button class="btn btn-link" class="fa fa-search" id="search-button" data-toggle="modal" data-target="#searchModal"><i class="tim-icons fa fa-search" ></i>
-                    <span class="d-lg-none d-md-block">Search</span>
-                  </button>
-                </li>
+            <div class="collapse navbar-collapse" id="navigation">
+               <ul class="navbar-nav ml-auto">
+                  <li class="search-bar input-group">
+                    <button class="btn btn-link" class="fa fa-search" id="search-button" data-toggle="modal" data-target="#searchModal"><i class="tim-icons fa fa-search" ></i>
+                      <span class="d-lg-none d-md-block">Search</span>
+                    </button>
+                  </li>
 
 
-
-
-                 {% if current_user.is_authenticated %}
-                     <li class="dropdown nav-item">
-                      <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
-                        <div class="photo">
-                          <img src="#" alt="Profile Photo">
-                        </div>
-                        <b class="caret d-none d-lg-block d-xl-block"></b>
-                        <p class="d-lg-none">
-                          Đăng xuất
-                        </p>
-                      </a>
-                      <ul class="dropdown-menu dropdown-navbar">
-                        <li class="nav-link"><a href="#" class="nav-item dropdown-item">Thông tin</a></li>
-                        <li class="dropdown-divider"></li>
-                        <li class="nav-link"><a href="{{ url_for('logout') }}" class="nav-item dropdown-item">Đăng xuất</a></li>
-                      </ul>
-                </li>
-                 {% endif %}
-             </ul>
-
-
-
-          </div>
+               </ul>
+            </div>
         </div>
       </nav>
       <div class="modal modal-search fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModal" aria-hidden="true">
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <input type="text" class="form-control" id="search" placeholder="Nhập để tìm kiếm">
+              <input type="text" class="form-control" id="search" placeholder="Nhập để tìm kiếm sách">
             </div>
           </div>
         </div>

@@ -1,8 +1,129 @@
-{% extends 'login.html' %}
- {% block content %}
-    {% if current_user.is_authenticated %}
-        <h1>HÊLo</h1>
-    {% else %}
-       <h4>Chào mừng Admin</h4>
-    {% endif %}
-{% endblock content %}
+{% extends 'admin/master.html' %}
+
+{% block head_css %}
+    {{super()}}
+    <link href="{{ url_for('static',filename='/assets/css/css_main.css') }}" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
+    <link rel="icon" type="image/png" href="/static/assets/img/favicon.png">
+
+{% endblock %}
+
+{% block page_body %}
+    <nav class="navbar navbar-expand-lg navbar-absolute navbar-transparent">
+            <div class="container-fluid">
+              <div class="navbar-wrapper">
+                <div class="navbar-toggle d-inline">
+                  <button type="button" class="navbar-toggler">
+                    <span class="navbar-toggler-bar bar1"></span>
+                    <span class="navbar-toggler-bar bar2"></span>
+                    <span class="navbar-toggler-bar bar3"></span>
+                  </button>
+                </div>
+              {% block brand %}
+                <a class="navbar-brand" href="{{ admin_view.admin.url }}">{{ admin_view.admin.name }}</a>
+              {% endblock %}
+
+              </div>
+              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navigation"
+                      aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-bar navbar-kebab"></span>
+                <span class="navbar-toggler-bar navbar-kebab"></span>
+                <span class="navbar-toggler-bar navbar-kebab"></span>
+              </button>
+                  <div class="collapse navbar-collapse" id="navigation">
+                     <ul class="navbar-nav ml-auto">
+                        <li class="search-bar input-group">
+                          <button class="btn btn-link" class="fa fa-search" id="search-button" data-toggle="modal" data-target="#searchModal"><i class="tim-icons fa fa-search" ></i>
+                            <span class="d-lg-none d-md-block">Search</span>
+                          </button>
+                        </li>
+                         {% if current_user.is_authenticated %}
+                           <li class="dropdown nav-item">
+                                <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+                                  <div class="photo">
+                                    <img src="{{ url_for('static',filename= current_user.avata)}}" alt="Profile Photo">
+                                  </div>
+                                  <b class="caret d-none d-lg-block d-xl-block"></b>
+                                  <p class="d-lg-none">
+                                    Đăng xuất
+                                  </p>
+                                </a>
+                                <ul class="dropdown-menu dropdown-navbar">
+                                  <li class="nav-link"><a href="#" class="nav-item dropdown-item">Thông tin</a></li>
+                                  <li class="dropdown-divider"></li>
+                                  <li class="nav-link"><a href="{{ url_for('route_logout') }}" class="nav-item dropdown-item">Đăng xuất</a></li>
+                                </ul>
+                           </li>
+                        {% endif %}
+                     </ul>
+                      {% block menu_links %}
+                         <ul class="nav navbar-nav navbar-right">
+                            {{ layout.menu_links() }}
+                         </ul>
+                      {% endblock %}
+                  </div>
+        <div class="sidebar">
+          <div class="sidebar-wrapper">
+            <div class="logo">
+              <a class="simple-text logo-normal">
+                Các tác vụ hiện tại
+              </a>
+            </div>
+              {% block main_menu %}
+                <ul class="nav">
+                    {{ layout.menu() }}
+                </ul>
+              {% endblock  %}
+
+          </div>
+        </div>
+        </div>
+
+    </nav>
+    <div class="modal modal-search fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <input type="text" class="form-control" id="search" placeholder="Nhập để tìm kiếm sách">
+            </div>
+          </div>
+        </div>
+    </div>
+
+    {% block messages %}
+        {{super()}}
+    {% endblock %}
+
+
+
+    {# store the jinja2 context for form_rules rendering logic #}
+    {% set render_ctx = h.resolve_ctx() %}
+
+    <div class="main-panel">
+      {% block body_content %}
+        <div class="content">
+
+            {% if current_user.is_authenticated %}
+                {% block content %}
+                {% endblock %}
+            {% else %}
+            {% endif %}
+        </div>
+        {% include 'footer.html' %}
+      {% endblock %}
+    </div>
+    {% include 'fixed-plugin.html' %}
+
+{% endblock %}
+
+{% block tail_js %}
+    {{ super() }}
+    {% include 'scripts-sidebar.html' %}
+{% endblock %}
+
+
+
+
+
+
+

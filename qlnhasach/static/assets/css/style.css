@@ -1,0 +1,123 @@
+.author a:focus,  .author a:hover,  .author a:focus,  .author a:hover {
+    font-weight: 700;
+}
+
+.container{
+	padding-top: 50px;
+}
+
+.perfect-feature {
+    float: left;
+    margin: 0 0 18px 22px;
+    text-align: left;
+    width: 144px;
+    display: table;
+}
+    
+.featureWrap{
+    display: flex;
+    flex-direction: column;
+    padding: 35px;
+}
+
+.image-link {
+    line-height: 0;
+}
+
+.title {
+    width: 144px;
+    height: 36px;
+    padding: 0;
+    font-family: PoynterOSDisp,poynter,serif;
+    font-size: 14px;
+    font-weight: 600;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.25;
+    letter-spacing: .57px;
+    text-align: center;
+    color: #000;
+    margin-top: 15px;
+    overflow: hidden;
+}
+
+.author {
+    height: 16px;
+    padding: 5px 0;
+    font-family: Lato;
+    font-size: 12px;
+    font-weight: 400;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.33;
+    letter-spacing: .43px;
+    text-align: center;
+    color: #21282d;
+    margin-bottom: 4px;
+}
+
+.author a {
+    font-family: Lato;
+    font-size: 12px;
+    font-weight: 400;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.33;
+    letter-spacing: .43px;
+    color: #9c9d9e;
+    text-decoration: underline;
+}
+
+
+.image {
+    height: 216px;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.title a {
+    font-family: PoynterOSDisp,poynter,serif;
+    font-size: 14px;
+    font-weight: 600;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.25;
+    letter-spacing: .57px;
+    color: #ffffffff;
+}
+
+.image img {
+    max-height: 216px;
+    max-width: 144px;
+}
+
+
+.row{
+    display: -ms-flexbox;
+    display: flex;}
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+    justify-content: space-between;
+}
+
+stars{
+    display: flex;
+    justify-direction: center;
+    align-items: center;
+}
+
+.star{
+    list-style: none;
+    color: white;
+}
+
+.star-rating{
+    margin: 5px auto 8px;
+    text-align: center;
+}
+
+.star-rating div{
+    margin-right: 40px;
+}

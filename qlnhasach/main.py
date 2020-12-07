@@ -6,18 +6,6 @@ from qlnhasach.models import User
 import hashlib
 
 
-@app.route('/login-admin', methods=["post", "get"])
-def login_admin():
-    if request.method == "POST":
-        username = request.form.get("username")
-        password = str(hashlib.md5(request.form.get("password").strip().encode("utf-8")).hexdigest())
-        user = User.query.filter(User.username == username.strip(),
-                                 User.password == password).first()
-
-        return render_template('login.html')
-    return redirect("/admin")
-
-
 @app.route('/')
 def route_main():
     return render_template('login.html')
@@ -25,39 +13,46 @@ def route_main():
 
 @app.route("/login", methods=['get', 'post'])
 def route_login():
-    if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password', '')
-        password = hashlib.md5(password.encode('utf-8')).hexdigest()
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        password = str(hashlib.md5(password.encode('utf-8')).hexdigest())
+        user = User.query.filter(User.username == username.strip(),
+                                 User.password == password).first()
 
-        user = User.query.filter(username==username,
-                                 password==password).first()
-        if user and user.user_role == 2:
+        if user:
             login_user(user=user)
-    elif request.method == 'GET':
-        print(request.url)
-    return render_template('login.html')
+            return redirect('/admin')
+
+    # elif request.method == 'GET':
+    #     print(request.url)
+    # elif request.method == 'GET':
+    #     print(request.url)
 
 
-@app.route('/logout')
+@app.route('/')
 def route_logout():
     logout_user()
     return redirect(url_for('/login'))
 
 
-@app.route('/ketoan')
-def route_accountant():
-    return render_template('accountant_page.html')
-
-
-@app.route('/thukho')
-def route_accountant():
-    return render_template('stocker_page.html')
-
-
 @login.user_loader
 def user_load(user_id):
     return User.query.get(user_id)
+
+
+@app.route('/user')
+def home():
+    dssach = utils.read_data()
+    return render_template('client/home.html', dssach=dssach)
+
+
+@app.route('/chitiet', methods=['GET'])
+def nhapsach():
+    idphieunhap= int (request.form.get['id_sachnhap'])
+    soluongnhap = int(request.form.get['so_luong'])
+    sach = utils.nhap_sach(idSachNhap=idphieunhap,soLuongNhap=soluongnhap)
+    return redirect('/admin')
 
 
 if __name__ == "__main__":

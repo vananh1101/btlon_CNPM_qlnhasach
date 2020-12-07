@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+            rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+          integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+	<!-- Style css -->
+	<link rel="stylesheet" type="text/css" href="static/assets/css/style.css">
+    <script src="/static/assets/home/starrating.js">
+
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            {% for sach in dssach %}
+                <div class="perfect-feature">
+                    <div class="featureWrap">
+                        <a class="image-link"  href="#">
+                            <div class="image">
+                                <img src="{{ url_for('static',filename=sach.hinh) }}" alt="{{ sach.hinh }}">
+                            </div>
+                        </a>
+                        <div class="title">
+                            <a  href="#">{{  sach.ten_sach }}</a>
+                        </div>
+                        <div class="author">
+                            <a href="#">{{ sach.tac_gia }}</a>
+                        </div>
+                        <div class="star-rating ">
+                            <div>
+
+                                    <ul class="stars row">
+                                        <li class="star"><i class="fa fa-star"></i></li>
+                                        <li class="star"><i class="fa fa-star"></i></li>
+                                        <li class="star"><i class="fa fa-star"></i></li>
+                                        <li class="star"><i class="fa fa-star"></i></li>
+                                        <li class="star"><i class="fa fa-star"></i></li>
+                                    </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

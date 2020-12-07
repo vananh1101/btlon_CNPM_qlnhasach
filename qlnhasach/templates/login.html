@@ -16,9 +16,14 @@
 
 <body class="">
   <div class="wrapper">
-    {% include 'sidebar.html' %}
+    {% block sidebar %}
+      {% include 'sidebar.html' %}
+    {% endblock %}
     <div class="main-panel">
-      {% include 'Search_toolbar.html' %}
+      {% block search_toolbar%}
+        {% include 'Search_toolbar.html' %}
+      {% endblock %}
+
       <div class="content">
 
           {% block content %}
@@ -38,7 +43,8 @@
                               <div class="row">
                                 <div class="col-md-3 px-md-1">
                                   <div class="form-group">
-                                    <label>Tên đăng nhập</label>
+
+                                    <label>Tên đăng nhập </label>
                                     <input type="text" placeholder="Nhập tên đăng nhập", class="form-control" name="username">
                                   </div>
                                 </div>

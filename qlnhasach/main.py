@@ -1,28 +1,9 @@
 from flask_login import login_user, login_manager, login_required, current_user
 from flask import render_template, redirect, request, url_for, session
-from qlnhasach import app, models, untils,login
+from qlnhasach import app, models, utils,login
 from qlnhasach.admin import *
 from qlnhasach.models import User, KhachHang
 import hashlib
-from jinja2 import TemplateNotFound
-from qlnhasach.untils import add_costumer
-from datetime import datetime
-# @app.route('/login-admin', methods=["post", "get"])
-# def login_admin():
-#     if request.method == "POST":
-#         username = request.form.get("username")
-#         password = str(hashlib.md5(request.form.get("password").strip().encode("utf-8")).hexdigest())
-#         user = User.query.filter(User.username == username.strip(),
-#                                  User.password == password).first()
-#         if user:
-#             login_user(user=user)
-#         return render_template('login.html')
-#     return redirect("/admin")
-
-
-@app.route('/')
-def route_main():
-    return render_template('login.html')
 
 
 @app.route("/login", methods=['get', 'post'])
@@ -76,7 +57,7 @@ def route_register():
                                    success=False)
 
         # tạo user
-        if untils.add_costumer(name=name, username='#KH_'+username, diachi=location, ngaysinh=datetime_object,
+        if utils.add_costumer(name=name, username='#KH_'+username, diachi=location, ngaysinh=datetime_object,
                          dienthoai=phone, password=password):
             return redirect('/')
         return render_template( 'login.html',
@@ -117,6 +98,22 @@ def not_found_error(error):
 @app.errorhandler(403)
 def not_found_error(error):
     return render_template('page-403.html'),403
+
+
+@app.route('/user')
+@login_required
+def home():
+    dssach = utils.read_data()
+    return render_template('client/home.html', dssach=dssach)
+
+
+@app.route('/chitiet', methods=['GET'])
+@login_required
+def nhapsach():
+    idphieunhap= int (request.form.get['id_sachnhap'])
+    soluongnhap = int(request.form.get['so_luong'])
+    sach = utils.nhap_sach(idSachNhap=idphieunhap,soLuongNhap=soluongnhap)
+    return redirect('/admin')
 
 
 if __name__ == "__main__":

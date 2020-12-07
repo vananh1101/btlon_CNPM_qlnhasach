@@ -1,6 +1,6 @@
 {% extends "login.html" %}
 
-{% block title %} Truy cập bị từ chối {% endblock %}
+{% block title %}<title>Truy cập bị từ chối</title>  {% endblock %}
 
 
 {% block content %}
@@ -13,7 +13,7 @@
                     <h4 class="card-title">
                         Mời đăng nhập và đi bằng cửa chính б（＞ε＜）∂
                     </h4>
-                    <a href="{{ url_for('base_blueprint.login') }}" class="btn btn-primary btn-round">Login</a>
+                    <a href="{{ url_for('route_login') }}" class="btn btn-primary btn-round">Login</a>
                 </div>
             </div>
         </div>

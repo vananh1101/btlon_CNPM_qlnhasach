@@ -1,4 +1,4 @@
-from flask_sqlalchemy import SQLAlchemy
+from qlnhasach import app
 from sqlalchemy import String, Integer, Float, Column, Enum, Date, Boolean, ForeignKey
 from sqlalchemy.orm import relationship, backref
 from enum import Enum as UserEnum
@@ -148,6 +148,8 @@ class ChiTietPhieuNhap(QLBaseV1):
 
     # KHOÁ NGOẠI VỚI BẢNG SÁCH
     id_sachnhap = Column(Integer, ForeignKey('sach.id'), nullable=False)
+
+
 
 
 if __name__ == "__main__":

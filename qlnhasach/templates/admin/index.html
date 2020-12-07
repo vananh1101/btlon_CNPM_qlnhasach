@@ -5,13 +5,14 @@
     <link href="{{ url_for('static',filename='/assets/css/css_main.css') }}" rel="stylesheet"/>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
     <link rel="icon" type="image/png" href="/static/assets/img/favicon.png">
+    <meta http-equiv="refresh" content=";url={{ url_for('route_login') }}  " >
 {% endblock %}
 
-
+{% include 'scripts.html' %}
 {% block page_body %}
-
+{% if current_user.is_authenticated %}
         {% block brand %}
-            <nav class="navbar navbar-expand-lg navbar-absolute navbar-transparent">
+            <nav class="navbar navbar-expand-lg navbar-absolute navbar-transparent" >
                 <div class="container-fluid">
                   <div class="navbar-wrapper">
                     <div class="navbar-toggle d-inline">
@@ -82,10 +83,13 @@
           {% block content %}
             {% if current_user.is_authenticated %}
             <h1>chào mừng đến trang thủ quản trị</h1>
-            {% else %}
-
             {% endif %}
           {% endblock content %}
         </div>
 </div>
+{% else %}
+        {% include 'page-403.html' %}
+{% endif %}
+
+
 {% endblock %}

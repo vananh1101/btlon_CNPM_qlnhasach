@@ -1,6 +1,6 @@
 from flask_login import login_user, login_manager, login_required, current_user
 from flask import render_template, redirect, request, url_for, session
-from qlnhasach import app, login, models, untils
+from qlnhasach import app, models, untils,login
 from qlnhasach.admin import *
 from qlnhasach.models import User, KhachHang
 import hashlib
@@ -35,11 +35,9 @@ def route_login():
         costumer = KhachHang.query.filter(KhachHang.username == '#KH_'+username, KhachHang.password == password).first()
         if user:
             login_user(user=user)
-            user.confirm_login()
             return redirect('/admin')
         if costumer:
             login_user(user=costumer)
-            costumer.confirm_login()
             return redirect('/home')
         else:
             return render_template('login.html', msg='Tài khoản hoặc mật khẩu không đúng, hãy thử lại')
@@ -58,21 +56,21 @@ def route_register():
 
 
         #KIểm tra trùng tên
-        Khach = KhachHang.query.filter_by(username=username).first()
-        if Khach:
+        khach = KhachHang.query.filter_by(username=username).first()
+        if khach:
             return render_template( 'register.html',
                                     msg='Tên tài khoản đã được sử dụng',
                                 success=False)
 
 
         #Kiểm tra nếu số điện thoại đã được đăng kí
-        Khach = KhachHang.query.filter_by(dienthoai=phone).first()
-        if Khach:
+        khach = KhachHang.query.filter_by(dienthoai=phone).first()
+        if khach:
             return render_template('register.html',
                                    msg='Số điện thoại đã được đăng kí',
                                    success=False)
 
-        if phone.isalpha()== True:
+        if phone.isalpha():
             return render_template('register.html',
                                    msg='Số điện thoại không hợp lệ',
                                    success=False)
@@ -88,28 +86,17 @@ def route_register():
         return render_template( 'register.html')
 
 
-@app.route('/admin')
+@app.route('/home')
 @login_required
-def route_admin():
-    if not current_user.is_authenticated():
-        return render_template('page-403.html')
+def login_r():
+    pass
 
 
 @app.route('/logout')
 @login_required
 def route_logout():
     logout_user()
-    return redirect(url_for('login'))
-
-
-# @app.route('/ketoan')
-# def route_ketoan():
-#     return render_template('ketoan/accountant_page.html')
-#
-#
-@app.route('/thukho')
-def route_accountant():
-    return render_template('thukho/stocker_page.html')
+    return redirect('/login')
 
 
 @login.user_loader
@@ -130,29 +117,6 @@ def not_found_error(error):
 @app.errorhandler(403)
 def not_found_error(error):
     return render_template('page-403.html'),403
-
-#Tim các trang web được yêu cầu
-
-
-# @app.route('/<template>')
-# @login_required
-# def route_template(template):
-#     try:
-#
-#         if not template.endswith('.html'):
-#             template += '.html'
-#
-#         # Detect the current page
-#         segment = get_segment(request)
-#
-#         # Serve the file (if exists) from app/templates/FILE.html
-#         return render_template(template, segment=segment)
-#
-#     except TemplateNotFound:
-#         return render_template('page-404.html'), 404
-#
-#     except:
-#         return render_template('page-500.html'), 500
 
 
 if __name__ == "__main__":

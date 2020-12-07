@@ -89,7 +89,7 @@ class HoaDon(QLBase):
 
     # QUAN HỆ 1-N VỚI BẢNG CHI TIẾT HOÁ ĐƠN
     chi_tiet_hoa_don = relationship('ChiTietHoaDon',
-                            backref='hoa_don', lazy=True)
+                                    backref='hoa_don', lazy=True)
 
 
 # BẢNG CHI TIẾT HOÁ ĐƠN
@@ -150,6 +150,16 @@ class ChiTietPhieuNhap(QLBase):
 
     def __int__(self):
         return self.id
+
+
+class QuyDinh(QLBase):
+    __tablename__ = 'quy_dinh'
+
+    so_luong_nhap_toi_thieu = Column(Integer, nullable=False)
+    so_luong_ton_toi_thieu = Column(Integer, nullable=False)
+    tien_no_toi_da = Column(Float, nullable=False)
+    so_luong_ton_sau_ban = Column(Integer, nullable=False)
+    is_active = Column(Boolean, default=True)
 
 
 if __name__ == "__main__":

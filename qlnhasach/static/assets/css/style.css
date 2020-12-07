@@ -91,17 +91,6 @@
     max-width: 144px;
 }
 
-a {
-font-family: Lato,sans-serif;
-font-weight: 400;
-font-style: normal;
-display: inline-block;
-color: #347d56;
-text-decoration: none;
-padding: 0;
-line-height: 1;
-cursor: pointer;
-}
 
 .row{
     display: -ms-flexbox;

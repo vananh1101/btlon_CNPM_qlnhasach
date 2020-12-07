@@ -1,6 +1,6 @@
 from flask_login import login_user, login_manager
 from flask import render_template, redirect, request, url_for
-from qlnhasach import app, login, utils
+from qlnhasach import app, login
 from qlnhasach.admin import *
 from qlnhasach.models import User
 import hashlib
@@ -26,7 +26,6 @@ def route_login():
 
     # elif request.method == 'GET':
     #     print(request.url)
-    #     return render_template('login.html')
     # elif request.method == 'GET':
     #     print(request.url)
 
@@ -42,18 +41,19 @@ def user_load(user_id):
     return User.query.get(user_id)
 
 
-# @app.route('/sach')
-# def book_list():
-#     dssach = utils.read_data()
-#     return render_template('danhsachsach.html', dssach=dssach)
-
-
 @app.route('/user')
 def home():
     dssach = utils.read_data()
     return render_template('client/home.html', dssach=dssach)
 
 
-if __name__ == \
-        "__main__":
+@app.route('/chitiet', methods=['GET'])
+def nhapsach():
+    idphieunhap= int (request.form.get['id_sachnhap'])
+    soluongnhap = int(request.form.get['so_luong'])
+    sach = utils.nhap_sach(idSachNhap=idphieunhap,soLuongNhap=soluongnhap)
+    return redirect('/admin')
+
+
+if __name__ == "__main__":
     app.run(debug=True, port=4000)

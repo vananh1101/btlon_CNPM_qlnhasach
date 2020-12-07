@@ -20,9 +20,14 @@
 
 <body class="">
   <div class="wrapper">
-    {% include 'sidebar.html' %}
+    {% block sidebar %}
+      {% include 'sidebar.html' %}
+    {% endblock %}
     <div class="main-panel">
-      {% include 'Search_toolbar.html' %}
+      {% block search_toolbar%}
+        {% include 'Search_toolbar.html' %}
+      {% endblock %}
+
       <div class="content">
 
           {% block content %}

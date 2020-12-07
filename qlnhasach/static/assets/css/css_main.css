@@ -238,6 +238,7 @@ th {
 label {
   display: inline-block;
   margin-bottom: 0.5rem;
+  color: #ffffff;
 }
 
 button {
@@ -20958,6 +20959,9 @@ Copyright (c) 2015 Daniel Eden
 
 .icon-components::before {
   content: "\ea65";
+}
 
 
-
+.form-group  label{
+    color:#ffffff;
+}

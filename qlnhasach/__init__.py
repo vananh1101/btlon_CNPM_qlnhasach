@@ -12,6 +12,7 @@ db = SQLAlchemy(app=app)
 
 admin = Admin(app=app,
               name='Quản lí nhà sách',
+
               template_mode='bootstrap4')
 
 login = LoginManager(app=app)

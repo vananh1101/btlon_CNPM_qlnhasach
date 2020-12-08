@@ -30,6 +30,7 @@ class User(QLBase, UserMixin):
     avata = Column(String(100))
     user_role = Column(Enum(UserRole), nullable=False)
 
+
     # QUAN HỆ 1-N VỚI BẢNG PHIỂU THU TIỀN
     phieu_thu = relationship('PhieuThuTien', backref='user', lazy=True)
 
@@ -48,10 +49,9 @@ class KhachHang(QLBase):
     ngay_sinh = Column(Date)
     dia_chi = Column(String(150))
     dien_thoai = Column(String(11))
-    username = Column(String(150))
-    password = Column(String(150))
-    email = Column(String(150))
-
+    username = Column(String(100), nullable=False)
+    password = Column(String(100), nullable=False)
+    email = Column(String(100))
     # QUAN HỆ 1-N VỚI BẢNG HOÁ ĐƠN
     hoa_don = relationship('HoaDon', backref='khach_hang', lazy=True)
 
@@ -162,7 +162,7 @@ class QuyDinh(QLBase):
     so_luong_ton_toi_thieu = Column(Integer, nullable=False)
     tien_no_toi_da = Column(Float, nullable=False)
     so_luong_ton_sau_ban = Column(Integer, nullable=False)
-    is_active = Column(Boolean, default=True)
+    tien_thu_khong_vuot_tien_no = Column(Boolean, default=True, nullable=False)
 
 
 if __name__ == "__main__":

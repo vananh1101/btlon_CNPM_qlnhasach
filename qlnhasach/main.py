@@ -1,4 +1,4 @@
-from flask_login import login_user, login_manager, login_required, current_user
+from flask_login import login_user, login_manager, login_required, current_user, logout_user
 from flask import render_template, redirect, request, url_for, session
 from qlnhasach import app, models, utils,login
 from qlnhasach.admin import *
@@ -40,7 +40,7 @@ def route_login():
             return redirect('/home')
         else:
             return render_template('login.html', msg='Tài khoản hoặc mật khẩu không đúng, hãy thử lại')
-    return redirect('/')
+    return render_template('login.html')
 
 
 @app.route('/register', methods=['GET', 'POST'])

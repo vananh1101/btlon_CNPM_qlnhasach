@@ -22,14 +22,15 @@ def nhap_sach(soLuongNhap, idSachNhap):
         print(ex)
 
 
-def add_costumer(name, username, password, dienthoai, diachi, ngaysinh):
+def add_costumer(name, username, password, dienthoai, diachi, ngaysinh,email):
     password = str(hashlib.md5(password.encode('utf-8')).hexdigest())
     u = KhachHang(ho_ten=name,
                   dia_chi=diachi,
              username=username,
              password=password,
              dien_thoai=dienthoai,
-                  ngay_sinh=ngaysinh)
+                  ngay_sinh=ngaysinh,
+                  email = email)
     try:
         db.session.add(u)
         db.session.commit()

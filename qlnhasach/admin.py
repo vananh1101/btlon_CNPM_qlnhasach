@@ -1,4 +1,4 @@
-from qlnhasach import admin, db, utils, main
+from qlnhasach import admin, db, utils
 from qlnhasach.models import UserRole, Sach, PhieuNhapSach, PhieuThuTien, ChiTietPhieuNhap, KhachHang, QuyDinh
 from flask import redirect, url_for
 from flask_admin.contrib.sqla import ModelView

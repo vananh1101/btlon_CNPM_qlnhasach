@@ -50,6 +50,7 @@ class KhachHang(QLBase):
     dien_thoai = Column(String(11))
     username = Column(String(150))
     password = Column(String(150))
+    email = Column(String(150))
 
     # QUAN HỆ 1-N VỚI BẢNG HOÁ ĐƠN
     hoa_don = relationship('HoaDon', backref='khach_hang', lazy=True)

@@ -159,7 +159,7 @@ class QuyDinh(QLBase):
     so_luong_ton_toi_thieu = Column(Integer, nullable=False)
     tien_no_toi_da = Column(Float, nullable=False)
     so_luong_ton_sau_ban = Column(Integer, nullable=False)
-    is_active = Column(Boolean, default=True)
+    tien_thu_khong_vuot_tien_no = Column(Boolean, default=True, nullable=False)
 
 
 if __name__ == "__main__":

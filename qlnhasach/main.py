@@ -1,4 +1,4 @@
-from flask_login import login_user, login_manager
+from flask_login import login_user, login_manager, logout_user
 from flask import render_template, redirect, request, url_for
 from qlnhasach import app, login
 from qlnhasach.admin import *
@@ -47,12 +47,22 @@ def home():
     return render_template('client/home.html', dssach=dssach)
 
 
-@app.route('/chitiet', methods=['GET'])
-def nhapsach():
-    idphieunhap= int (request.form.get['id_sachnhap'])
-    soluongnhap = int(request.form.get['so_luong'])
-    sach = utils.nhap_sach(idSachNhap=idphieunhap,soLuongNhap=soluongnhap)
-    return redirect('/admin')
+# @app.route('/admin/chitietphieunhap/', methods=['post'])
+# def nhapsach():
+#     import pdb
+#     pdb.set_trace()
+#     idphieunhap= request.form.get['id_sachnhap']
+#     soluongnhap = request.form.get['so_luong']
+#     minNhap = QuyDinh.query.value(QuyDinh.so_luong_nhap_toi_thieu)
+#     maxSachTon = QuyDinh.query.value(QuyDinh.so_luong_ton_toi_thieu)
+#     soLuongTon = db.session.query(Sach.so_luong).filter(Sach.id == idphieunhap).value(Sach.so_luong)
+#     update = Sach.query.filter(Sach.id == idphieunhap).first()
+#     try:
+#         if soluongnhap >= minNhap and soLuongTon < maxSachTon:
+#             update.so_luong += soluongnhap
+#             db.session.commit()
+#     except Exception as ex:
+#         print(ex)
 
 
 if __name__ == "__main__":

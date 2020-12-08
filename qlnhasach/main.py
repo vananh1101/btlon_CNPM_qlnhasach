@@ -47,23 +47,5 @@ def home():
     return render_template('client/home.html', dssach=dssach)
 
 
-# @app.route('/admin/chitietphieunhap/', methods=['post'])
-# def nhapsach():
-#     import pdb
-#     pdb.set_trace()
-#     idphieunhap= request.form.get['id_sachnhap']
-#     soluongnhap = request.form.get['so_luong']
-#     minNhap = QuyDinh.query.value(QuyDinh.so_luong_nhap_toi_thieu)
-#     maxSachTon = QuyDinh.query.value(QuyDinh.so_luong_ton_toi_thieu)
-#     soLuongTon = db.session.query(Sach.so_luong).filter(Sach.id == idphieunhap).value(Sach.so_luong)
-#     update = Sach.query.filter(Sach.id == idphieunhap).first()
-#     try:
-#         if soluongnhap >= minNhap and soLuongTon < maxSachTon:
-#             update.so_luong += soluongnhap
-#             db.session.commit()
-#     except Exception as ex:
-#         print(ex)
-
-
 if __name__ == "__main__":
     app.run(debug=True, port=4000)

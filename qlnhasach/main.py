@@ -1,12 +1,10 @@
-from flask_login import login_user, login_manager, login_required, current_user
+from flask_login import login_user, login_manager, login_required, current_user, logout_user
 from flask import render_template, redirect, request, url_for, session
-from qlnhasach import app, models, untils,login
+from qlnhasach import app, models, utils,login
 from qlnhasach.admin import *
 from qlnhasach.models import User, KhachHang
 import hashlib
-from jinja2 import TemplateNotFound
-from qlnhasach.untils import add_costumer
-from datetime import datetime
+from qlnhasach.utils import add_costumer
 # @app.route('/login-admin', methods=["post", "get"])
 # def login_admin():
 #     if request.method == "POST":
@@ -20,9 +18,10 @@ from datetime import datetime
 #     return redirect("/admin")
 
 
+
 @app.route('/')
 def route_main():
-    return render_template('login.html')
+    return render_template('client/home.html')
 
 
 @app.route("/login", methods=['get', 'post'])
@@ -41,7 +40,7 @@ def route_login():
             return redirect('/home')
         else:
             return render_template('login.html', msg='Tài khoản hoặc mật khẩu không đúng, hãy thử lại')
-    return redirect('/')
+    return render_template('login.html')
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -50,10 +49,10 @@ def route_register():
         name = request.form.get('re_name')
         username = request.form.get('re_username')
         password = request.form.get('re_password', '').strip()
-        datetime_object = request.form.get('re_date','').strip()
+        datetime_object = request.form.get('re_date', '').strip()
         location = request.form.get('re_location')
         phone = str(request.form.get('re_phone'))
-
+        email = request.form.get('re_email')
 
         #KIểm tra trùng tên
         khach = KhachHang.query.filter_by(username=username).first()
@@ -74,10 +73,15 @@ def route_register():
             return render_template('register.html',
                                    msg='Số điện thoại không hợp lệ',
                                    success=False)
+        khach = KhachHang.query.filter_by(email=email).first()
+        if khach:
+            return render_template('register.html',
+                                   msg='Email đã được đăng kí',
+                                   success=False)
 
         # tạo user
-        if untils.add_costumer(name=name, username='#KH_'+username, diachi=location, ngaysinh=datetime_object,
-                         dienthoai=phone, password=password):
+        if utils.add_costumer(name=name, username='#KH_'+username, diachi=location, ngaysinh=datetime_object,
+                         dienthoai=phone, password=password, email=email):
             return redirect('/')
         return render_template( 'login.html',
                                 msg='User created please <a href="/login">login</a>',
@@ -117,6 +121,22 @@ def not_found_error(error):
 @app.errorhandler(403)
 def not_found_error(error):
     return render_template('page-403.html'),403
+
+
+@app.route('/user')
+@login_required
+def home():
+    dssach = utils.read_data()
+    return render_template('client/home.html', dssach=dssach)
+
+
+@app.route('/chitiet', methods=['GET'])
+@login_required
+def nhapsach():
+    idphieunhap= int (request.form.get['id_sachnhap'])
+    soluongnhap = int(request.form.get['so_luong'])
+    sach = utils.nhap_sach(idSachNhap=idphieunhap,soLuongNhap=soluongnhap)
+    return redirect('/admin')
 
 
 if __name__ == "__main__":

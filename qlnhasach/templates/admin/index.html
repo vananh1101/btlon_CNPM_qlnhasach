@@ -9,6 +9,7 @@
 {% endblock %}
 
 {% block page_body %}
+{% if current_user.is_authenticated %}
     <nav class="navbar navbar-expand-lg navbar-absolute navbar-transparent">
             <div class="container-fluid">
               <div class="navbar-wrapper">
@@ -113,7 +114,9 @@
       {% endblock %}
     </div>
     {% include 'fixed-plugin.html' %}
-
+{% else %}
+        {% include 'page-403.html' %}
+{% endif %}
 {% endblock %}
 
 {% block tail_js %}
@@ -121,9 +124,7 @@
     {% include 'scripts-sidebar.html' %}
 {% endblock %}
 
+{% block tail %}
 
-
-
-
-
-
+    <script src="{{ url_for('static',filename='/assets/js/demo/demo.js') }}"></script>
+{% endblock %}

@@ -210,26 +210,8 @@
 	 top: -10px;
 	 right: -10px;
 }
- .page-wrapper button .cart-item:before {
-     content: '1';
-	 display: block;
-	 line-height: 24px;
-	 height: 24px;
-	 width: 24px;
-	 font-size: 12px;
-	 font-weight: 600;
-	 background: red;
-	 color: white;
-	 border-radius: 20px;
-	 text-align: center;
-}
- .page-wrapper button.sendtocart .cart-item {
-	 display: block;
-	 animation: xAxis 1s forwards cubic-bezier(1.000,0.440,0.840,0.165);
-}
- .page-wrapper button.sendtocart .cart-item:before {
-	 animation: yAxis 1s alternate forwards cubic-bezier(0.165,0.840,0.440,1.000);
-}
+
+
  .cart {
 	 position: fixed;
 	 top: 20px;

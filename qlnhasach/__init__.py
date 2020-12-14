@@ -14,6 +14,4 @@ admin = Admin(app=app,
               name='Quản lí nhà sách',
 
               template_mode='bootstrap4')
-
-login_manager = LoginManager(app)
-
+login = LoginManager(app=app)

@@ -39,7 +39,10 @@
                               onclick="addToCart('{{ sach.id }}','{{ sach.ten_sach }}' , '{{ sach.don_gia}}')
                               addcart()
                                       "
-                      {% endif %}>
+                      {% endif %}
+                              {% if sach.so_luong <= 20%}
+                          disabled
+                      {% endif %}>>
                         Thêm vào giỏ
                         <span class="cart-item"	></span>
                       </button>

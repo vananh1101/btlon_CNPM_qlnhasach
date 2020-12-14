@@ -42,19 +42,17 @@
                                         <li class="fa fa-star "></li>
                                     </ul>
                         </div>
-{#                        <div class="page-wrapper" href="{{ url_for('add_to_cart', id = sach.id) }}"#}
-{#                        onclick="addcart()">#}
-{#                      <button id="addtocart" class="addtocart" >#}
-{#                        Thêm vào giỏ#}
-{#                        <span class="cart-item"	></span>#}
-{#                      </button>#}
-{#                    </div>#}
                         <div class="page-wrapper" >
                       <button id="addtocart" class="addtocart" {% if not current_user.is_authenticated %}
                                   onclick="page_trans()"
                          {% else %}
-                              onclick="addcart()
+                              onclick="
+                                      addcart()
                                       addToCart({{ sach.id }},'{{ sach.ten_sach }}' , {{ sach.don_gia}})"
+                              onmouseover="out_of_stock(sach.so_luong)"
+                      {% endif %}
+                      {% if sach.so_luong <= 20%}
+                          disabled
                       {% endif %}>
                         Thêm vào giỏ
                         <span class="cart-item"	></span>

@@ -93,8 +93,3 @@ def add_receipt(cart):
     return False
 
 
-def checked(id , quantity):
-    sach = get_book_by_Id(id)
-    if (sach.so_luong - quantity) < 20:
-        return False
-    return True

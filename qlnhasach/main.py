@@ -1,7 +1,7 @@
 import login as login
 from flask_login import login_user, login_manager, login_required, current_user, logout_user
 from flask import render_template, redirect, request, url_for, session, jsonify, copy_current_request_context
-from qlnhasach import app, models, utils,login_manager
+from qlnhasach import app, models, utils, login
 from qlnhasach.admin import *
 from qlnhasach.models import User, KhachHang, connect
 import hashlib
@@ -101,6 +101,9 @@ def searchkw():
     dssach = utils.read_books(kw, from_price, to_price)
     return render_template('client/search.html',dssach)
 
+@app.route('/admin-logged')
+def admin_log():
+    return redirect('/admin')
 
 @app.route('/api/cart', methods=['post'])
 @login_required
@@ -162,7 +165,7 @@ def payment():
             return render_template('client/home.html', msg='T')
         else:
             return render_template('client/home.html', msg='F')
-    return render_template('client/user-infor.html', msg = msg)
+    return render_template('client/user-infor.html')
 
 
 @app.route('/logout')
@@ -170,14 +173,6 @@ def payment():
 def route_logout():
     logout_user()
     return redirect('/')
-
-
-@login_manager.user_loader
-def load_user(id, endpoint='user'):
-    if endpoint == 'admin':
-        return User.query.get(id)
-    else:
-        return KhachHang.query.get(id)
 
 
 @app.login_manager.unauthorized_handler

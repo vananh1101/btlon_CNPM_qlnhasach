@@ -6,7 +6,6 @@ from flask_login import UserMixin
 from datetime import datetime
 from qlnhasach import db
 import sqlite3
-from qlnhasach import admin_app,user_app
 class QLBase(db.Model):
     __abstract__ = True
     id = Column(Integer, primary_key=True, autoincrement=True)

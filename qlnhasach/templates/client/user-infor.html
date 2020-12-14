@@ -25,28 +25,28 @@
             <div class="col-md-12 pr-md-1">
               <div class="form-group">
                 <label>Tên KH</label>
-                <input type="text" class="form-control" value="{{ current_user.name }}">
+                <input type="text" class="form-control" disabled value="{{ current_user.ho_ten }}">
               </div>
             </div>
               </div>
             <div class="col-md-12 pr-md-1">
               <div class="form-group">
                 <label for="exampleInputEmail1">Địa chỉ email</label>
-                <input type="email" class="form-control" value="{{ current_user.email }}">
+                <input type="email" class="form-control" disabled value="{{ current_user.email }}">
               </div>
             </div>
           </div>
             <div class="col-md- pr-md-1">
               <div class="form-group">
                 <label>Số điện thoại liên lạc</label>
-                <input type="text" class="form-control"  value="{{ current_user.dien_thoai }}">
+                <input type="text" class="form-control" disabled  value="{{ current_user.dien_thoai }}">
               </div>
             </div>
           <div class="row">
             <div class="col-md-12">
               <div class="form-group">
                 <label>Địa chỉ</label>
-                <input type="text" class="form-control" placeholder="Địa chỉ" value="{{ current_user.dia_chi }}">
+                <input type="text" class="form-control" disabled placeholder="Địa chỉ" value="{{ current_user.dia_chi }}">
               </div>
             </div>
           </div>

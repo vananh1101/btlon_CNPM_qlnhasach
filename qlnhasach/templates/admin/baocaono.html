@@ -1,10 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'admin/index.html' %}
 
-</body>
-</html>
+
+{% block content %}
+
+<form  method="post">
+    <div class="form-group">
+        <label>Chọn tháng</label>
+        <select name="month" class="form-control" id="month" >
+            {% for thang in range(1,13) %}
+                <option value="{{ thang }}">{{ thang }}</option>
+            {% endfor %}
+        </select>
+
+    </div>
+    <input type="hidden" id="tensach" value="{{ tenSach }}"/>
+
+    <div class="form-group">
+            <input type="submit"
+                   value="Xem báo cáo"
+                   id="baocao"
+                   class="btn btn-warning"/>
+        </div>
+</form>
+    <canvas id="myChart" width="1200" height="600"></canvas>
+
+<script>
+        var ten = document.getElementById("tensach").value
+        var tonDau = {{ tonDau }}
+        var tonCuoi = {{ tonCuoi }}
+        var tongNhap = {{ tongNhap }}
+        var tongXuat = {{ tongXuat }}
+        document.body.addEventListener("load", getChart( ten,
+        tonDau,tonCuoi,tongNhap,tongXuat))
+</script>
+{% endblock %}
+
+
+

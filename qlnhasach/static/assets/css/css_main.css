@@ -20965,3 +20965,7 @@ Copyright (c) 2015 Daniel Eden
 .form-group  label{
     color:#ffffff;
 }
+
+.select2-results li, #month option {
+    color: black;
+}

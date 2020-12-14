@@ -1,7 +1,10 @@
+from operator import and_
 from flask_admin.babel import gettext
 import logging
-from qlnhasach import admin, db, utils
-from qlnhasach.models import UserRole, Sach, PhieuNhapSach, PhieuThuTien, ChiTietPhieuNhap, KhachHang, QuyDinh
+from sqlalchemy import func
+from qlnhasach import admin, db, utils, query
+from qlnhasach.models import UserRole, Sach, PhieuNhapSach, PhieuThuTien, \
+    ChiTietPhieuNhap, KhachHang, QuyDinh, HoaDon, ChiTietHoaDon
 from flask import redirect, url_for, flash, request
 from flask_admin.contrib.sqla import ModelView
 from flask_admin import BaseView, expose
@@ -41,12 +44,10 @@ class CreateModel(CommonView):
     def create_model(self, form):
         try:
             model = self.build_new_instance()
-
+            minNhap, maxSachTon = utils.quy_dinh_nhap_sach()
             form.populate_obj(model)
             idSachNhap = form.data.get('sach').id
             soLuongNhap = form.data.get('so_luong')
-            minNhap = QuyDinh.query.value(QuyDinh.so_luong_nhap_toi_thieu)
-            maxSachTon = QuyDinh.query.value(QuyDinh.so_luong_ton_toi_thieu)
             soLuongTon = db.session.query(Sach.so_luong).filter(Sach.id == idSachNhap).value(Sach.so_luong)
             update = Sach.query.filter(Sach.id == idSachNhap).first()
             if soLuongNhap >= minNhap and soLuongTon < maxSachTon:
@@ -79,21 +80,29 @@ class ThuTienModel(CommonView):
             model = self.build_new_instance()
 
             form.populate_obj(model)
-            idSachNhap = form.data.get('sach').id
-            soLuongNhap = form.data.get('so_luong')
-            minNhap = QuyDinh.query.value(QuyDinh.so_luong_nhap_toi_thieu)
-            maxSachTon = QuyDinh.query.value(QuyDinh.so_luong_ton_toi_thieu)
-            soLuongTon = db.session.query(Sach.so_luong).filter(Sach.id == idSachNhap).value(Sach.so_luong)
-            update = Sach.query.filter(Sach.id == idSachNhap).first()
-            if soLuongNhap >= minNhap and soLuongTon < maxSachTon:
-                update.so_luong += soLuongNhap
+            idKH = form.data.get('khach_hang').id
+            tongTienThu = float(form.data.get('tong_tien_thu'))
+            suDungQD = QuyDinh.query.value(QuyDinh.tien_thu_khong_vuot_tien_no)
+
+            if suDungQD:
+                tongNo = db.session.query(HoaDon.id, func.sum(ChiTietHoaDon.don_gia)) \
+                    .join(ChiTietHoaDon, ChiTietHoaDon.id_hoadon == HoaDon.id) \
+                    .filter(and_(HoaDon.id_khachhang == idKH)) \
+                    .value(func.sum(ChiTietHoaDon.don_gia))
+
+                if tongTienThu <= tongNo:
+                    # tongNo -= tongTienThu
+                    self.session.add(model)
+                    self._on_model_change(form, model, True)
+                    self.session.commit()
+                else:
+                    flash(gettext('Failed to create record. '), 'danger')
+                    self.session.rollback()
+                    return False
+            else:
                 self.session.add(model)
                 self._on_model_change(form, model, True)
                 self.session.commit()
-            else:
-                flash(gettext('Failed to create record. '), 'danger')
-                self.session.rollback()
-                return False
         except Exception as ex:
             if not self.handle_view_exception(ex):
                 flash(gettext('Failed to create record. %(error)s', error=str(ex)), 'error')
@@ -109,7 +118,6 @@ class ThuTienModel(CommonView):
 
 
 class TraCuu(CommonView):
-
     column_searchable_list = ('ten_sach', 'tac_gia', 'the_loai')
 
 
@@ -136,24 +144,25 @@ class BaoCaoCongNo(BaoCaoView):
 
 
 class BaoCaoTon(BaoCaoView):
-    @expose("/")
+    @expose("/", methods=['POST', 'GET'])
     def index(self):
-        return self.render('admin/baocaohangton.html')
-
-
-# class NhapSach(db.session):
-#
-# #     idSachNhap ,soLuongNhap =main.nhapsach()
-# #     minNhap = QuyDinh.query.value(QuyDinh.so_luong_nhap_toi_thieu)
-# #     maxSachTon = QuyDinh.query.value(QuyDinh.so_luong_ton_toi_thieu)
-# #     soLuongTon = db.session.query(Sach.so_luong).filter(Sach.id == idSachNhap).value(Sach.so_luong)
-# #     update = Sach.query.filter(Sach.id == idSachNhap).first()
-# #     try:
-# #         if soLuongNhap >= minNhap and soLuongTon < maxSachTon:
-# #             update.so_luong += soLuongNhap
-# #             db.session.commit()
-# #     except Exception as ex:
-# #         print(ex)
+        tenSach = None
+        tonDau = None
+        tonCuoi = None
+        tongNhap = None
+        tongXuat = None
+        if request.method == 'POST':
+            thang = int(request.form.get("month"))
+            # import pdb
+            # pdb.set_trace()
+            tenSach = utils.du_lieu_ten_sach()
+            tonDau, tonCuoi, tongNhap, tongXuat = utils.du_lieu_sach_ton(thang=thang)
+            return self.render('admin/baocaohangton.html', tenSach=tenSach, tonDau=tonDau, tonCuoi=tonCuoi,
+                               tongNhap=tongNhap,
+                               tongXuat=tongXuat)
+        return self.render('admin/baocaohangton.html', tenSach=tenSach, tonDau=tonDau, tonCuoi=tonCuoi,
+                           tongNhap=tongNhap,
+                           tongXuat=tongXuat)
 
 
 # VIEW ADMIN
@@ -168,8 +177,9 @@ admin.add_view(CreateModel(ChiTietPhieuNhap, db.session, name="Chi tiết phiế
 
 
 # VIEW ADMIN VÀ THU NGÂN
-admin.add_view(CommonView(PhieuThuTien, db.session, name="Phiếu thu tiền",
-                          user_roles=[UserRole.ADMIN, UserRole.Thu_ngan]))
+admin.add_view(ThuTienModel(PhieuThuTien, db.session, name="Phiếu thu tiền",
+                            user_roles=[UserRole.ADMIN, UserRole.Thu_ngan]))
+admin.add_view(CommonView(HoaDon, db.session, name="Hoá đơn", user_roles=[UserRole.ADMIN, UserRole.Thu_ngan]))
 admin.add_view(BaoCaoTon(name='Báo cáo tồn'))
 admin.add_view(BaoCaoCongNo(name='Báo cáo công nợ'))
 

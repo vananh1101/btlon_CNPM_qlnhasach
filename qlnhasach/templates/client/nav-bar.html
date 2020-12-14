@@ -29,11 +29,6 @@
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('route_login') }}">Đăng nhập</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('route_register') }}">Đăng kí</a></li>
                 {% endif %}
-                <li class="nav-item"><a class="nav-link" href=" {% if current_user.is_authenticated %}
-                   {{ url_for('admin_log') }}
-                 {% else %}
-                 {{ url_for('route_login_user') }}
-                 {% endif %} ">Nhân viên</a></li>
 
             </ul>
           </div>

@@ -9,7 +9,6 @@ import hashlib
 @app.route("/login", methods=['get', 'post'])
 def route_login():
     if request.method == "POST":
-
         username = request.form.get("username")
         password = str(hashlib.md5(request.form.get("password").strip().encode("utf-8")).hexdigest())
         user = User.query.filter(User.username == username, User.password == password).first()
@@ -24,20 +23,6 @@ def route_login():
             return render_template('login.html', msg='Tài khoản hoặc mật khẩu không đúng, hãy thử lại')
     return render_template('login.html')
 
-
-@app.route("/login_user", methods=['get', 'post'])
-def route_login_user():
-    if request.method == "POST":
-
-        username = request.form.get("username")
-        password = str(hashlib.md5(request.form.get("password").strip().encode("utf-8")).hexdigest())
-        user = User.query.filter(User.username == username, User.password == password).first()
-        if user:
-            login_user(user=user)
-            return redirect('/admin')
-        else:
-            return render_template('login.html', msg='Tài khoản hoặc mật khẩu không đúng, hãy thử lại')
-    return render_template('login.html')
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -101,9 +86,6 @@ def searchkw():
     dssach = utils.read_books(kw, from_price, to_price)
     return render_template('client/search.html',dssach)
 
-@app.route('/admin-logged')
-def admin_log():
-    return redirect('/admin')
 
 @app.route('/api/cart', methods=['post'])
 @login_required

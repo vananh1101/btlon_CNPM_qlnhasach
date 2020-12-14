@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -14,34 +14,52 @@
     </script>
 </head>
 <body>
-    <div class="container">
+    <div class="container"  >
         <div class="row">
             {% for sach in dssach %}
                 <div class="perfect-feature">
                     <div class="featureWrap">
-                        <a class="image-link"  href="#">
-                            <div class="image">
+                        <a class="image-link"   href="{{url_for('book_detail', book_id = sach.id)}}" id="c_img">
+                            <div class="image" href="{{url_for('book_detail', book_id = sach.id)}}" >
                                 <img src="{{ url_for('static',filename=sach.hinh) }}" alt="{{ sach.hinh }}">
                             </div>
                         </a>
-                        <div class="title">
-                            <a  href="#">{{  sach.ten_sach }}</a>
+                        <div class="title" id="c_title" href="{{url_for('book_detail', book_id = sach.id)}}">
+                            <a >{{  sach.ten_sach }}</a>
                         </div>
-                        <div class="author">
-                            <a href="#">{{ sach.tac_gia }}</a>
+                        <div class="author" id="c_author">
+                            <a  href="{{url_for('book_detail', book_id = sach.id)}}">{{ sach.tac_gia }}</a>
+                        </div>
+                        <div class="price" id="c_price" href="{{url_for('book_detail', book_id = sach.id)}}">
+                            <a>{{ "{:,.0f}".format(sach.don_gia) }} VNĐ</a>
                         </div>
                         <div class="star-rating ">
-                            <div>
-
-                                    <ul class="stars row">
-                                        <li class="star"><i class="fa fa-star"></i></li>
-                                        <li class="star"><i class="fa fa-star"></i></li>
-                                        <li class="star"><i class="fa fa-star"></i></li>
-                                        <li class="star"><i class="fa fa-star"></i></li>
-                                        <li class="star"><i class="fa fa-star"></i></li>
+                                    <ul class="star row">
+                                        <li class="fa fa-star "></li>
+                                        <li class="fa fa-star "></li>
+                                        <li class="fa fa-star "></li>
+                                        <li class="fa fa-star "></li>
+                                        <li class="fa fa-star "></li>
                                     </ul>
-                            </div>
                         </div>
+{#                        <div class="page-wrapper" href="{{ url_for('add_to_cart', id = sach.id) }}"#}
+{#                        onclick="addcart()">#}
+{#                      <button id="addtocart" class="addtocart" >#}
+{#                        Thêm vào giỏ#}
+{#                        <span class="cart-item"	></span>#}
+{#                      </button>#}
+{#                    </div>#}
+                        <div class="page-wrapper" >
+                      <button id="addtocart" class="addtocart" {% if not current_user.is_authenticated %}
+                                  onclick="page_trans()"
+                         {% else %}
+                              onclick="addcart()
+                                      addToCart({{ sach.id }},'{{ sach.ten_sach }}' , {{ sach.don_gia}})"
+                      {% endif %}>
+                        Thêm vào giỏ
+                        <span class="cart-item"	></span>
+                      </button>
+                    </div>
                     </div>
                 </div>
             {% endfor %}

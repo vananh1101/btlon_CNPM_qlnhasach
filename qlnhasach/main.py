@@ -1,28 +1,9 @@
 from flask_login import login_user, login_manager, login_required, current_user, logout_user
-from flask import render_template, redirect, request, url_for, session
-from qlnhasach import app, models, utils,login
+from flask import render_template, redirect, request, url_for, session, jsonify, copy_current_request_context
+from qlnhasach import app, models, utils,login_manager
 from qlnhasach.admin import *
-from qlnhasach.models import User, KhachHang
+from qlnhasach.models import User, KhachHang, connect
 import hashlib
-from qlnhasach.utils import add_costumer
-# @app.route('/login-admin', methods=["post", "get"])
-# def login_admin():
-#     if request.method == "POST":
-#         username = request.form.get("username")
-#         password = str(hashlib.md5(request.form.get("password").strip().encode("utf-8")).hexdigest())
-#         user = User.query.filter(User.username == username.strip(),
-#                                  User.password == password).first()
-#         if user:
-#             login_user(user=user)
-#         return render_template('login.html')
-#     return redirect("/admin")
-
-
-
-@app.route('/')
-def route_main():
-    return render_template('client/home.html')
-
 
 @app.route("/login", methods=['get', 'post'])
 def route_login():
@@ -31,13 +12,28 @@ def route_login():
         username = request.form.get("username")
         password = str(hashlib.md5(request.form.get("password").strip().encode("utf-8")).hexdigest())
         user = User.query.filter(User.username == username, User.password == password).first()
-        costumer = KhachHang.query.filter(KhachHang.username == '#KH_'+username, KhachHang.password == password).first()
         if user:
             login_user(user=user)
             return redirect('/admin')
+        costumer = KhachHang.query.filter(KhachHang.username == '#KH_'+username, KhachHang.password == password).first()
         if costumer:
-            login_user(user=costumer)
-            return redirect('/home')
+            login_user(costumer,remember=True)
+            return redirect('/')
+        else:
+            return render_template('login.html', msg='Tài khoản hoặc mật khẩu không đúng, hãy thử lại')
+    return render_template('login.html')
+
+
+@app.route("/login_user", methods=['get', 'post'])
+def route_login_user():
+    if request.method == "POST":
+
+        username = request.form.get("username")
+        password = str(hashlib.md5(request.form.get("password").strip().encode("utf-8")).hexdigest())
+        user = User.query.filter(User.username == username, User.password == password).first()
+        if user:
+            login_user(user=user)
+            return redirect('/admin')
         else:
             return render_template('login.html', msg='Tài khoản hoặc mật khẩu không đúng, hãy thử lại')
     return render_template('login.html')
@@ -63,13 +59,13 @@ def route_register():
 
 
         #Kiểm tra nếu số điện thoại đã được đăng kí
-        khach = KhachHang.query.filter_by(dienthoai=phone).first()
+        khach = KhachHang.query.filter_by(dien_thoai=phone).first()
         if khach:
             return render_template('register.html',
                                    msg='Số điện thoại đã được đăng kí',
                                    success=False)
 
-        if phone.isalpha():
+        if phone.isdigit():
             return render_template('register.html',
                                    msg='Số điện thoại không hợp lệ',
                                    success=False)
@@ -84,28 +80,103 @@ def route_register():
                          dienthoai=phone, password=password, email=email):
             return redirect('/')
         return render_template( 'login.html',
-                                msg='User created please <a href="/login">login</a>',
+                                msg='Đăng kí thành công, mời đăng nhập',
                            success=True)
     else:
         return render_template( 'register.html')
 
 
-@app.route('/home')
+@app.route("/books/details/<int:book_id>")
+def book_detail(book_id):
+    book = utils.get_book_by_Id(book_id=book_id)
+    return render_template('client/book_details.html', sach = book)
+
+
+@app.route('/search/details/"')
+def searchkw():
+    kw = request.args.get("kw")
+    from_price = request.args.get("from_price")
+    to_price = request.args.get("to_price")
+    dssach = utils.read_books(kw, from_price, to_price)
+    return render_template('client/search.html',dssach)
+
+
+@app.route('/api/cart', methods=['post'])
 @login_required
-def login_r():
-    pass
+def add_to_cart():
+    if 'cart' not in session:
+        session['cart'] = {}
+
+    data = request.json
+    id = str(data.get('id'))
+    ten_sach = data.get('ten_sach')
+    don_gia = data.get('don_gia')
+
+    cart = session['cart']
+    if id in cart:
+        quan = cart[id]['quantity']
+        cart[id]['quantity'] = int(quan) + 1
+    else:
+        cart[id] = {
+            "id": id,
+            "ten_sach": ten_sach,
+            "don_gia": don_gia,
+            "quantity": 1
+        }
+
+    session['cart'] = cart
+    quan, price = utils.cart_stats(session['cart'])
+
+    return jsonify({
+        'cart' : session['cart'],
+        'total_quantity': quan,
+        'total_amount': price
+    })
+
+
+@app.route('/cart-infor', methods=['get', 'post'])
+@login_required
+def cart():
+    quan, price = utils.cart_stats(session.get('cart'))
+    cart_info = {
+        'total_quantity': quan,
+        'total_amount': price
+    }
+    return render_template('client/cart.html', cart_info=cart_info)
+
+
+@app.route('/payment-infor/')
+@login_required
+def checkout():
+    quan, price = utils.cart_stats(session.get('cart'))
+    return render_template("client/user-infor.html", quan = quan, price = price)
+
+
+@app.route('/payment', methods=['get', 'post'])
+@login_required
+def payment():
+    if request.method == 'POST':
+        if utils.add_receipt(session.get('cart')):
+            del session['cart']
+            return render_template('client/home.html', msg='T')
+        else:
+            return render_template('client/home.html', msg='F')
+    return render_template('client/user-infor.html', msg)
 
 
 @app.route('/logout')
 @login_required
 def route_logout():
     logout_user()
-    return redirect('/login')
+    return redirect('/')
 
 
-@login.user_loader
-def user_load(user_id):
-    return User.query.get(user_id)
+@login_manager.user_loader
+def load_user(id, endpoint='user'):
+    if endpoint == 'admin':
+        return User.query.get(id)
+    else:
+        return KhachHang.query.get(id)
 
 
 @app.login_manager.unauthorized_handler
@@ -123,12 +194,30 @@ def not_found_error(error):
     return render_template('page-403.html'),403
 
 
-@app.route('/user')
-@login_required
+@app.route('/')
 def home():
     dssach = utils.read_data()
     return render_template('client/home.html', dssach=dssach)
 
+@app.route('/search')
+def search():
+    return render_template('client/search.html')
+
+# def getimgbyId(id):
+#     cursor = connect()
+#     query = """SELECT hinh
+#                   FROM Sach
+#                  WHERE id = ?;"""
+#     cursor.execute(query, (id,))
+#
+#     row = cursor.fetchone()
+#
+#     if not row:
+#         return None
+#
+#     hinh = Sach(row[0])
+#
+#     return hinh
 
 @app.route('/chitiet', methods=['GET'])
 @login_required

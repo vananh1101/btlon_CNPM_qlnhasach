@@ -1,10 +1,85 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends 'client/home.html'%}
+{% block title %}
+<title>Tìm kiếm </title>
+     <link href="/static/assets/css/style.css" rel="stylesheet" />
+    <link href="/static/assets/css/search.css" rel="stylesheet" />
+{% endblock  %}
+
+{% block body %}
+     <form onsubmit="{{ url_for('searchkw')}}" >
+                <div class="form-group">
+                    <input class="form-control"
+                           name="kw"
+                           placeholder="Nhập từ khóa đề tìm..." />
+                </div>
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <input type="number"
+                               name="from_price"
+                               class="form-control"
+                               placeholder="Nhập giá bắt đầu..." />
+                    </div>
+                    <div class="col-md-6 form-group">
+                        <input type="number"
+                               class="form-control"
+                               name="to_price"
+                               placeholder="Nhập giá kết thúc..." />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Tìm kiếm"
+                           class="btn btn-danger" >
+                </div>
+            </form>
+        </div>
+     {% for sach in dssach %}
+                <div class="perfect-feature">
+                    <div class="featureWrap">
+                        <a class="image-link"   href="{{url_for('book_detail', book_id = sach.id)}}" id="c_img">
+                            <div class="image" href="{{url_for('book_detail', book_id = sach.id)}}" >
+                                <img src="{{ url_for('static',filename=sach.hinh) }}" alt="{{ sach.hinh }}">
+                            </div>
+                        </a>
+                        <div class="title" id="c_title" href="{{url_for('book_detail', book_id = sach.id)}}">
+                            <a >{{  sach.ten_sach }}</a>
+                        </div>
+                        <div class="author" id="c_author">
+                            <a  href="{{url_for('book_detail', book_id = sach.id)}}">{{ sach.tac_gia }}</a>
+                        </div>
+                        <div class="price" id="c_price" href="{{url_for('book_detail', book_id = sach.id)}}">
+                            <a>{{ "{:,.0f}".format(sach.don_gia) }} VNĐ</a>
+                        </div>
+                        <div class="star-rating ">
+                            <div>
+
+                                    <ul class="star row">
+                                        <li class="fa fa-star "></li>
+                                        <li class="fa fa-star "></li>
+                                        <li class="fa fa-star "></li>
+                                        <li class="fa fa-star "></li>
+                                        <li class="fa fa-star "></li>
+                                    </ul>
+                            </div>
+                        </div>
+{#                        <div class="page-wrapper" href="{{ url_for('add_to_cart', id = sach.id) }}"#}
+{#                        onclick="addcart()">#}
+{#                      <button id="addtocart" class="addtocart" >#}
+{#                        Thêm vào giỏ#}
+{#                        <span class="cart-item"	></span>#}
+{#                      </button>#}
+{#                    </div>#}
+                        <div class="page-wrapper" >
+                      <button id="addtocart" class="addtocart" {% if not current_user.is_authenticated %}
+                                  onclick="page_trans()"
+                         {% else %}
+                              onclick="addcart()
+                                      addToCart('{{ sach.id }}','{{ sach.ten_sach }}' , '{{ sach.don_gia}}')"
+                      {% endif %}>
+                        Thêm vào giỏ
+                        <span class="cart-item"	></span>
+                      </button>
+                    </div>
+                    </div>
+                </div>
+            {% endfor %}
+{% endblock body %}

@@ -1,10 +1,10 @@
-from flask import Flask
+from flask import Flask, Blueprint
 from flask_sqlalchemy import SQLAlchemy
 from flask_admin import Admin
 from flask_login import LoginManager
 
 app = Flask(__name__)
-app.secret_key = 'Fw\xc6\xab\x1bM\x82\xe1$\xf08\x91js\x92\x9d'
+app.secret_key = "Fw\xc6\xab\x1bM\x82\xe1$\xf08\x91js\x92\x9d"
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:Phuong123%@localhost/qlnhasachdb?charset=utf8'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
@@ -15,4 +15,5 @@ admin = Admin(app=app,
 
               template_mode='bootstrap4')
 
-login = LoginManager(app=app)
+login_manager = LoginManager(app)
+

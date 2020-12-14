@@ -16486,6 +16486,7 @@ h1,
 .h1 {
   line-height: 1.05;
   margin-bottom: 30px;
+  margin-top: 60px;
 }
 
 h1 small,
@@ -18267,7 +18268,6 @@ table.tablesorter thead tr .headerSortDown {
 }
 
 .bd-docs .navbar .navbar-brand {
-  position: relative;
 }
 
 /* Animations */
@@ -19915,6 +19915,7 @@ Copyright (c) 2015 Daniel Eden
   width: 100%;
   margin-bottom: 30px;
   box-shadow: 0 1px 20px 0px rgba(0, 0, 0, 0.1);
+  margin-left: 25%;
 }
 
 .card label {
@@ -20317,12 +20318,7 @@ Copyright (c) 2015 Daniel Eden
 }
 
 .card-user .author .block.block-three {
-  background: rgba(225, 78, 202, 0.6);
-  background: -webkit-linear-gradient(to right, rgba(225, 78, 202, 0.6) 0%, rgba(225, 78, 202, 0) 100%);
-  background: -o-linear-gradient(to right, rgba(225, 78, 202, 0.6) 0%, rgba(225, 78, 202, 0) 100%);
-  background: -moz-linear-gradient(to right, rgba(225, 78, 202, 0.6) 0%, rgba(225, 78, 202, 0) 100%);
-  background: linear-gradient(to right, rgba(225, 78, 202, 0.6) 0%, rgba(225, 78, 202, 0) 100%);
-  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=10);
+  0  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=10);
   -webkit-transform: rotate(170deg);
   -moz-transform: rotate(170deg);
   -ms-transform: rotate(170deg);

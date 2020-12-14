@@ -5,8 +5,8 @@ from enum import Enum as UserEnum
 from flask_login import UserMixin
 from datetime import datetime
 from qlnhasach import db
-
-
+import sqlite3
+from qlnhasach import admin_app,user_app
 class QLBase(db.Model):
     __abstract__ = True
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -42,7 +42,7 @@ class User(QLBase, UserMixin):
 
 
 # BẢNG KHÁCH HÀNG
-class KhachHang(QLBase):
+class KhachHang(QLBase, UserMixin):
     __tablename__ = 'khach_hang'
 
     ho_ten = Column(String(100), nullable=False)
@@ -163,6 +163,13 @@ class QuyDinh(QLBase):
     tien_no_toi_da = Column(Float, nullable=False)
     so_luong_ton_sau_ban = Column(Integer, nullable=False)
     tien_thu_khong_vuot_tien_no = Column(Boolean, default=True, nullable=False)
+
+
+def connect():
+    conn = sqlite3.connect("qlnhasachdb")
+    cursor = conn.cursor()
+    return cursor
+
 
 
 if __name__ == "__main__":

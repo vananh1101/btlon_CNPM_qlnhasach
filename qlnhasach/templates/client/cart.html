@@ -1,10 +1,83 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+
+{% extends 'client/home.html'%}
+{% block title %}
+<title>Giỏ hàng </title>
+     <link href="/static/assets/css/payment.css" rel="stylesheet" />
+    <link href="/static/assets/css/style.css" rel="stylesheet" />
+     <link href="/static/assets/css/nav.css" rel="stylesheet" />
+{% endblock  %}
+
+{% block body %}
+<div class="main">
+  <h1>Giỏ hàng</h1>
+
+  <h2 class="sub-heading">Free ship xuyên suốt dải ngân hà</h2>
+<div class="container mb-4">
+        <div class="row">
+            <div class="col-12">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col"> </th>
+                                <th scope="col">Tên sản phẩm</th>
+                                <th scope="col" class="text-center">Số lượng</th>
+                                <th scope="col" class="text-right">Đơn giá</th>
+                                <th> </th>
+                            </tr>
+                        </thead>
+                    </table>
+            </div>
+        </div>
+    {% if 'cart' in session %}
+     {% for sach in session['cart'].values() %}
+    <div class="container mb-4">
+        <div class="row">
+            <div class="col-12">
+                    <table class="table table-striped" >
+                        <tbody>
+                            <tr>
+                                <td> </td>
+                                <td style="width: 400px">{{  sach.ten_sach }}</td>
+                                <td><input class="form-control" type="text" value="{{ sach.quantity }}" /></td>
+                                <td class="text-right">{{ "{:,.0f}".format(sach.don_gia) }} VNĐ</td>
+                                <td class="text-right"><button class="btn btn-sm btn-danger"><i class="fa fa-trash"></i> </button> </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        <div class="shopping-cart row" style="
+    margin-left: 170px;">
+    <footer class="_grid cart-totals">
+      <div class="_column subtotal" id="subtotalCtr">
+        <div class="cart-totals-key">Tổng hóa đơn</div>
+        <div class="cart-totals-value">{{ "{:,.0f}".format(cart_info.total_amount )}}</div>
+      </div>
+      <div class="_column shipping" id="shippingCtr">
+        <div class="cart-totals-key">Tổng sản phẩm</div>
+        <div class="cart-totals-value">{{ "{:,.0f}".format(cart_info.total_quantity) }}</div>
+      </div>
+      <div class="_column taxes" id="taxesCtr">
+        <div class="cart-totals-key">Phí vận chuyển (Free now)</div>
+        <div class="cart-totals-value">0</div>
+      </div>
+      <div class="_column total" id="totalCtr">
+        <div class="cart-totals-key">Tổng tiền</div>
+        <div class="cart-totals-value">{{ "{:,.0f}".format(cart_info.total_amount) }}</div>
+      </div>
+      <div class="_column checkout">
+          <a href="{{url_for('checkout') }}"> <button class="addtocart" >Thanh toán</button></a>
+      </div>
+    </footer>
+
+  </div>
+</div>
+</div>
+
+
+{% else %}
+        <h1 class="card-category"> Không có hàng không giỏ</h1>
+{% endif %}
+{% endblock body %}

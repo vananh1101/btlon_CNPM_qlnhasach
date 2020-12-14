@@ -1,10 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends 'login.html'%}
+{% block title %}
+<title>Đăng nhập admin</title>
+{% endblock  %}
+ {% block content %}
+     <div class="row">
+                    <div class="col-md-8">
+                      <div class="card">
+                        <form role="form" method="post" action="{{ url_for('route_login_user') }}">
+                          <div class="card-header">
+                            <h5 class="title">Đăng nhập</h5>
+                            <h6 class="card-category">
+                              {% if msg %}
+                                  {{ msg | safe }}
+                              {% endif %}
+                            </h6>
+                          </div>
+                          <div class="card-body" >
+                              <div class="row">
+                                <div class="col-md-3 px-md-1">
+                                  <div class="form-group">
+                                    <label>Tên đăng nhập </label>
+                                    <input type="text" placeholder="Nhập tên đăng nhập", class="form-control" name="username">
+                                  </div>
+                                </div>
+
+                              </div>
+                              <div class="row">
+
+                                <div class="col-md-3 px-md-1">
+                                  <div class="form-group">
+                                    <label>Mật khẩu</label>
+                                    <input type="password" placeholder="Nhập mật khẩu", class="form-control" name="password">
+                                  </div>
+                                </div>
+                              </div>
+                          </div>
+                          <div class="card-footer">
+                            <button type="submit" name="login" class="btn btn-fill btn-primary">Đăng nhập</button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+    {% endblock %}
+ {% block search_toolbar %}
+{% endblock %}

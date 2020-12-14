@@ -1,7 +1,7 @@
 from flask_admin.babel import gettext
 import logging
 from qlnhasach import admin, db, utils
-from qlnhasach.models import UserRole, Sach, PhieuNhapSach, PhieuThuTien, ChiTietPhieuNhap, KhachHang, QuyDinh
+from qlnhasach.models import UserRole, Sach, PhieuNhapSach, PhieuThuTien, ChiTietPhieuNhap, KhachHang, QuyDinh, User
 from flask import redirect, url_for, flash, request
 from flask_admin.contrib.sqla import ModelView
 from flask_admin import BaseView, expose
@@ -33,7 +33,7 @@ class CommonView(NewView):
         self.user_roles = user_roles
 
     def is_accessible(self):
-        return current_user.is_authenticated and current_user.user_role in self.user_roles
+            return current_user.is_authenticated and current_user.user_role in self.user_roles
 
 
 class CreateModel(CommonView):

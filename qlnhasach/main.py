@@ -1,3 +1,4 @@
+import login as login
 from flask_login import login_user, login_manager, login_required, current_user, logout_user
 from flask import render_template, redirect, request, url_for, session, jsonify, copy_current_request_context
 from qlnhasach import app, models, utils,login_manager
@@ -161,7 +162,7 @@ def payment():
             return render_template('client/home.html', msg='T')
         else:
             return render_template('client/home.html', msg='F')
-    return render_template('client/user-infor.html', msg)
+    return render_template('client/user-infor.html', msg = msg)
 
 
 @app.route('/logout')
@@ -203,21 +204,11 @@ def home():
 def search():
     return render_template('client/search.html')
 
-# def getimgbyId(id):
-#     cursor = connect()
-#     query = """SELECT hinh
-#                   FROM Sach
-#                  WHERE id = ?;"""
-#     cursor.execute(query, (id,))
-#
-#     row = cursor.fetchone()
-#
-#     if not row:
-#         return None
-#
-#     hinh = Sach(row[0])
-#
-#     return hinh
+
+@login.user_loader
+def get_user(user_id):
+    return User.query.get(user_id)
+
 
 @app.route('/chitiet', methods=['GET'])
 @login_required

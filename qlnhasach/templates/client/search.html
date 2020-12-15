@@ -55,8 +55,11 @@
               </select>
             </div>
             </div>
-              <div class="page-wrapper"> <a href ="{{ url_for('searchkw') }}" >
-                  Tìm kiếm</a>
+              <div class="page-wrapper col"  >
+                 <h2> <a href="{{ url_for("searchkw") }}" class="addtocart" style="margin-left: 500px;" >
+                   Bắt đầu
+                  </a></h2>
+
             </div>
           </div>
 
@@ -64,11 +67,7 @@
 
       </form>
     </div>
-  {% if dssach %}
-      Có sách tìm thấy
-
-  {% else %}
-      Không có sách nào được tìm thấy
-  {% endif %}
+    {% block search %}
+        {% endblock %}
   </body>
 {% endblock body %}

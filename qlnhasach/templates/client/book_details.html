@@ -2,12 +2,14 @@
 {% block title %}
 <title>{{ sach.ten_sach }} </title>
      <link href="/static/assets/css/style.css" rel="stylesheet" />
+    <link href="/static/assets/css/nav.css" rel="stylesheet" />
 {% endblock  %}
 
 {% block body %}
 <body>
 	<div class="container">
-		<div class="card">
+		<div class="card" style=" margin-left: 50px;
+">
 			<div class="container-fliud">
 				<div class="wrapper row">
 					<div class="preview col-md-6">
@@ -29,7 +31,7 @@
 							</div>
 							<span class="review-no">41 reviews</span>
 						</div>
-						<p class="product-description">Suspendisse quos? Tempus cras iure temporibus? Eu laudantium cubilia sem sem! Repudiandae et! Massa senectus enim minim sociosqu delectus posuere.</p>
+						<p class="product-description">Đánh giá</p>
 						<p class="vote"><strong>Giá hiện tại: </strong> {{ "{:,.0f}".format(sach.don_gia) }} VNĐ <strong>(87 votes)</strong></p>
 
 						 <div class="page-wrapper" >
@@ -42,7 +44,7 @@
                       {% endif %}
                               {% if sach.so_luong <= 20%}
                           disabled
-                      {% endif %}>>
+                      {% endif %}>
                         Thêm vào giỏ
                         <span class="cart-item"	></span>
                       </button>

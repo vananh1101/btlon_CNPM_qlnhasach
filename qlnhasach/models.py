@@ -6,6 +6,8 @@ from flask_login import UserMixin
 from datetime import datetime
 from qlnhasach import db
 import sqlite3
+
+
 class QLBase(db.Model):
     __abstract__ = True
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -28,7 +30,6 @@ class User(QLBase, UserMixin):
     active = Column(Boolean, default=True)
     avata = Column(String(100))
     user_role = Column(Enum(UserRole), nullable=False)
-
 
     # QUAN HỆ 1-N VỚI BẢNG PHIỂU THU TIỀN
     phieu_thu = relationship('PhieuThuTien', backref='user', lazy=True)
@@ -168,7 +169,6 @@ def connect():
     conn = sqlite3.connect("qlnhasachdb")
     cursor = conn.cursor()
     return cursor
-
 
 
 if __name__ == "__main__":

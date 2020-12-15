@@ -5,6 +5,7 @@ from qlnhasach import db
 from flask_login import current_user
 import sqlite3
 
+
 def read_data():
     dssach = Sach.query
     return dssach.all()
@@ -56,7 +57,6 @@ def cart_stats(cart):
 
 def read_books(kw=None, from_price=None, to_price=None):
     books = Sach.query
-
     if kw:
         books = books.filter(Sach.ten_sach.contains(kw))
 
@@ -91,3 +91,7 @@ def add_receipt(cart):
     return False
 
 
+def check_login(username, password):
+    password = str(hashlib.md5(password.strip().encode("utf-8")).hexdigest())
+    return KhachHang.query.filter(KhachHang.username == username,
+                                  KhachHang.password == password).first()

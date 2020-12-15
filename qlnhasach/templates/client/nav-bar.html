@@ -16,24 +16,25 @@
                 {% if current_user.is_authenticated %}
                    {{ url_for('cart') }}
                  {% else %}
-                 {{ url_for('route_login') }}
+                 {{ url_for('user_login') }}
                  {% endif %}
                 ">Giỏ hàng <div id="cart" class="cart" data-totalitems="0">
                       <i class="fas fa-shopping-cart"></i>
                     </div>
                 </a></li>
-                {% if current_user.is_authenticated %}
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('route_logout') }}">Đăng xuất</a></li>
+             {% if session['costumer'] %}
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('logout')  }}">Đăng xuất</a></li>
                 {% endif %}
-                {% if not current_user.is_authenticated %}
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('route_login') }}">Đăng nhập</a></li>
+                {% if not session['costumer'] %}
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('user_login') }}">Đăng nhập</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('route_register') }}">Đăng kí</a></li>
                 {% endif %}
                 <li class="nav-item"><a class="nav-link" href=" {% if current_user.is_authenticated %}
                    {{ url_for('admin_log') }}
                  {% else %}
-                 {{ url_for('route_login_user') }}
+                 {{ url_for('route_logout')}}
                  {% endif %} ">Nhân viên</a></li>
+
             </ul>
           </div>
         </div>

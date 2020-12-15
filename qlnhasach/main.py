@@ -6,7 +6,8 @@ from qlnhasach.admin import *
 from qlnhasach.models import User, KhachHang, connect
 import hashlib
 
-@app.route("/login", methods=['get', 'post'])
+
+@app.route("/login-admin", methods=['get', 'post'])
 def route_login():
     if request.method == "POST":
         username = request.form.get("username")
@@ -20,19 +21,33 @@ def route_login():
     return render_template('login.html')
 
 
-@app.route("/login_user", methods=['get', 'post'])
-def route_login_user():
+@app.route("/login-user", methods=['get', 'post'])
+def user_login():
+    err_msg = ""
     if request.method == "POST":
-        username = request.form.get("username")
-        password = str(hashlib.md5(request.form.get("password").strip().encode("utf-8")).hexdigest())
-        costumer = KhachHang.query.filter(KhachHang.username == '#KH_' + username,
-                                              KhachHang.password == password).first()
+        # import pdb
+        # pdb.set_trace()
+
+        username = request.form.get('usrname')
+        password = request.form.get('pass', '')
+        costumer = utils.check_login(username=username, password=password)
         if costumer:
-            login_user(costumer)
-            return redirect('/')
+            auth_customer = {
+                'hoten': costumer.ho_ten,
+                'username': costumer.username,
+                'password': costumer.password,
+                'id': costumer.id,
+                'email': costumer.email,
+                'diachi': costumer.dia_chi,
+                'dienthoai': costumer.dien_thoai,
+                'ngaysinh': costumer.ngay_sinh
+            }
+            session['costumer'] = auth_customer
+            return redirect(url_for("home"))
         else:
-            return render_template('login.html', msg='Tài khoản hoặc mật khẩu không đúng, hãy thử lại')
-    return render_template('login.html')
+            err_msg = 'Tài khoản hoặc mật khẩu không đúng, hãy thử lại'
+    return render_template('client/login.html', err_msg=err_msg)
+
 
 
 @app.route('/admin-logged')
@@ -98,17 +113,17 @@ def book_detail(book_id):
 def search():
     return render_template('client/search.html')
 
+
 @app.route('/search/details"')
 def searchkw():
     kw = request.args.get("kw")
     from_price = request.args.get("from_price")
     to_price = request.args.get("to_price")
 
-    dssach = utils.read_books(
-                                   kw=kw,
+    dssach1 = utils.read_books( kw=kw,
                                    from_price=from_price,
                                    to_price=to_price)
-    return render_template('client/search.html', dssach = dssach)
+    return render_template('client/search-f.html', dssach1 = dssach1)
 
 
 @app.route('/api/cart', methods=['post'])
@@ -178,8 +193,20 @@ def payment():
 @login_required
 def route_logout():
     logout_user()
-    return redirect('/')
+    if 'cart' in session:
+        del session['cart']
 
+    return redirect(url_for("home"))
+
+
+@app.route('/logout-user')
+@login_required
+def logout():
+    session['costumer'] = None
+    if 'cart' in session:
+        del session['cart']
+
+    return redirect(url_for("home"))
 
 @app.login_manager.unauthorized_handler
 def unauthorized_handler():

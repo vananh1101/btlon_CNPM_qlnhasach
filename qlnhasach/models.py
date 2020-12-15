@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import String, Integer, Float, Column, Enum, Date, Boolean, ForeignKey
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import relationship
 from enum import Enum as UserEnum
 from flask_login import UserMixin
 from datetime import datetime
@@ -31,12 +31,14 @@ class User(QLBase, UserMixin):
     avata = Column(String(100))
     user_role = Column(Enum(UserRole), nullable=False)
 
-
     # QUAN HỆ 1-N VỚI BẢNG PHIỂU THU TIỀN
     phieu_thu = relationship('PhieuThuTien', backref='user', lazy=True)
 
     # QUAN HỆ 1-N VỚI BẢNG PHIẾU NHẬP SÁCH
     phieu_nhap_sach = relationship('PhieuNhapSach', backref='user', lazy=True)
+
+    # QUAN HỆ 1-N VỚI BẢNG QUY ĐỊNH
+    quy_dinh = relationship('QuyDinh', backref='user', lazy=True)
 
     def __str__(self):
         return self.ho_ten
@@ -55,9 +57,11 @@ class KhachHang(QLBase, UserMixin):
     email = Column(String(100))
     # QUAN HỆ 1-N VỚI BẢNG HOÁ ĐƠN
     hoa_don = relationship('HoaDon', backref='khach_hang', lazy=True)
-
     # QUAN HỆ 1-N VỚI BẢNG PHIỂU THU TIỀN
     phieu_thu_tien = relationship('PhieuThuTien', backref='khach_hang', lazy=True)
+
+    # # QUAN HỆ 1-N VỚI BẢNG DANH SACH NỢ
+    # tien_no = relationship('DanhSachNo', backref='khach_hang',lazy=True)
 
 
 # BẢNG SÁCH
@@ -68,7 +72,7 @@ class Sach(QLBase):
     tac_gia = Column(String(100), nullable=False)
     the_loai = Column(String(100), nullable=False)
     don_gia = Column(Float, nullable=False)
-    so_luong = Column(Integer, nullable=False)
+    so_luong = Column(Integer, nullable=False,default=0)
     hinh = Column(String(100))
 
     # QUAN HỆ 1-N VỚI BẢNG CHI TIẾT HOÁ ĐƠN
@@ -87,7 +91,6 @@ class HoaDon(QLBase):
     __tablename__ = 'hoa_don'
 
     ngay_nhap = Column(Date, default=datetime.today())
-
     # KHOÁ NGOẠI BẢNG KHÁCH HÀNG( QUAN HỆ 1-N)
     id_khachhang = Column(Integer, ForeignKey('khach_hang.id'), nullable=False)
 
@@ -100,7 +103,7 @@ class HoaDon(QLBase):
 class ChiTietHoaDon(QLBase):
     __tablename__ = 'chi_tiet_hoa_don'
 
-    so_luong_mua = Column(Integer, nullable=False)
+    so_luong_mua = Column(Integer, nullable=False, default=0)
     don_gia = Column(Float, nullable=False)
     # KHOÁ NGOẠI BẢNG HOÁ ĐƠN- SÁCH (1-N)
     id_sach = Column(Integer, ForeignKey('sach.id'), nullable=False)
@@ -121,6 +124,9 @@ class PhieuThuTien(QLBase):
 
     # KHOÁ NGOẠI VỚI BẢNG KHÁCH HÀNG
     id_khachhang = Column(Integer, ForeignKey('khach_hang.id'), nullable=False)
+
+    # # KHOÁ NGOẠI VỚI BẢNG HOÁ ĐƠN
+    # id_hoadon = Column(Integer, ForeignKey('hoa_don.id'), nullable=False)
 
     def __int__(self):
         return self.id
@@ -156,6 +162,7 @@ class ChiTietPhieuNhap(QLBase):
         return self.id
 
 
+# BẢNG QUY ĐỊNH CỦA ADMIN
 class QuyDinh(QLBase):
     __tablename__ = 'quy_dinh'
 
@@ -164,6 +171,18 @@ class QuyDinh(QLBase):
     tien_no_toi_da = Column(Float, nullable=False)
     so_luong_ton_sau_ban = Column(Integer, nullable=False)
     tien_thu_khong_vuot_tien_no = Column(Boolean, default=True, nullable=False)
+
+    id_admin = Column(Integer, ForeignKey('user.id'), nullable=False)
+
+
+# # BẢNG DANH SÁCH NỢ CỦA KHÁCH HÀNG
+# class DanhSachNo(QLBase):
+#     __tablename__ = 'danh_sach_KH_no'
+#
+#     tong_no = Column(Float,nullable=False)
+#
+#     # KHOÁ NGOẠI VỚI BẢNG KHÁCH HÀNG (1-N)
+#     id_khach_hang = Column(Integer, ForeignKey('khach_hang.id'), nullable=False)
 
 
 if __name__ == "__main__":

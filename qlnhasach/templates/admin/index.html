@@ -2,7 +2,7 @@
 
 {% block head_css %}
     {{super()}}
-    <link href="{{ url_for('static',filename='/assets/css/css_main.css') }}" rel="stylesheet"/>
+    <link href="{{ url_for('static',filename='assets/css/css_main.css') }}" rel="stylesheet"/>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css">
     <link rel="icon" type="image/png" href="/static/assets/img/favicon.png">
 
@@ -33,11 +33,6 @@
               </button>
                   <div class="collapse navbar-collapse" id="navigation">
                      <ul class="navbar-nav ml-auto">
-                        <li class="search-bar input-group">
-                          <button class="btn btn-link" class="fa fa-search" id="search-button" data-toggle="modal" data-target="#searchModal"><i class="tim-icons fa fa-search" ></i>
-                            <span class="d-lg-none d-md-block">Search</span>
-                          </button>
-                        </li>
                          {% if current_user.is_authenticated %}
                            <li class="dropdown nav-item">
                                 <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
@@ -50,7 +45,7 @@
                                   </p>
                                 </a>
                                 <ul class="dropdown-menu dropdown-navbar">
-                                  <li class="nav-link"><a href="#" class="nav-item dropdown-item">Thông tin</a></li>
+                                  <li class="nav-link"><a href="#" class="nav-item dropdown-item">{{ current_user.username }}</a></li>
                                   <li class="dropdown-divider"></li>
                                   <li class="nav-link"><a href="{{ url_for('route_logout') }}" class="nav-item dropdown-item">Đăng xuất</a></li>
                                 </ul>
@@ -122,9 +117,4 @@
 {% block tail_js %}
     {{ super() }}
     {% include 'scripts-sidebar.html' %}
-{% endblock %}
-
-{% block tail %}
-
-    <script src="{{ url_for('static',filename='/assets/js/demo/demo.js') }}"></script>
 {% endblock %}

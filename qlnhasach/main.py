@@ -2,10 +2,11 @@
 from flask import jsonify
 from flask_login import login_user, login_manager, login_required, current_user, logout_user
 from flask import render_template, redirect, request, url_for, session
-from qlnhasach import app, models, utils,login
+from qlnhasach import app, models, utils, login
 from qlnhasach.admin import *
 from qlnhasach.models import User, KhachHang
 import hashlib
+from qlnhasach.utils import add_costumer
 
 
 @app.route("/login-admin", methods=['get', 'post'])
@@ -21,7 +22,7 @@ def route_login():
             return render_template('login.html', msg='Tài khoản hoặc mật khẩu không đúng, hãy thử lại')
     return render_template('login.html')
 
-
+  
 @app.route("/login-user", methods=['get', 'post'])
 def user_login():
     err_msg = ""
@@ -67,15 +68,14 @@ def route_register():
         phone = str(request.form.get('re_phone'))
         email = request.form.get('re_email')
 
-        #KIểm tra trùng tên
+        # KIểm tra trùng tên
         khach = KhachHang.query.filter_by(username=username).first()
         if khach:
-            return render_template( 'register.html',
-                                    msg='Tên tài khoản đã được sử dụng',
-                                success=False)
+            return render_template('register.html',
+                                   msg='Tên tài khoản đã được sử dụng',
+                                   success=False)
 
-
-        #Kiểm tra nếu số điện thoại đã được đăng kí
+        # Kiểm tra nếu số điện thoại đã được đăng kí
         khach = KhachHang.query.filter_by(dienthoai=phone).first()
         if khach:
             return render_template('register.html',
@@ -93,14 +93,15 @@ def route_register():
                                    success=False)
 
         # tạo user
-        if utils.add_costumer(name=name, username='#KH_'+username, diachi=location, ngaysinh=datetime_object,
-                         dienthoai=phone, password=password, email=email):
+        if utils.add_costumer(name=name, username='#KH_' + username, diachi=location, ngaysinh=datetime_object,
+                              dienthoai=phone, password=password, email=email):
             return redirect('/')
         return render_template( 'login.html',
                                 msg='Đăng kí thành công, mời đăng nhập',
                            success=True)
+
     else:
-        return render_template( 'register.html')
+        return render_template('register.html')
 
 
 
@@ -194,9 +195,6 @@ def payment():
 @login_required
 def route_logout():
     logout_user()
-    if 'cart' in session:
-        del session['cart']
-
     return redirect(url_for("home"))
 
 
@@ -217,12 +215,12 @@ def unauthorized_handler():
 
 @app.errorhandler(404)
 def not_found_error(error):
-    return render_template('page-404.html'),404
+    return render_template('page-404.html'), 404
 
 
 @app.errorhandler(403)
 def not_found_error(error):
-    return render_template('page-403.html'),403
+    return render_template('page-403.html'), 403
 
 
 @app.route('/')

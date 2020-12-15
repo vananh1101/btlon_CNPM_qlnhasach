@@ -1,9 +1,17 @@
-from sqlalchemy import func, and_
 
+
+from qlnhasach.models import Sach, QuyDinh, HoaDon, ChiTietHoaDon
+from qlnhasach.models import Sach, QuyDinh
+from flask import request
+import json, hashlib
+from qlnhasach.models import KhachHang
+from sqlalchemy import func, and_
 from qlnhasach.models import Sach, QuyDinh, ChiTietPhieuNhap, PhieuNhapSach, KhachHang, ChiTietHoaDon, HoaDon, \
     PhieuThuTien
 import hashlib
 from qlnhasach import db
+from flask_login import current_user
+import sqlite3
 
 
 def add_costumer(name, username, password, dienthoai, diachi, ngaysinh, email):
@@ -131,4 +139,60 @@ def chi_tiet_tien_no_KH(idKH, thang):
         .filter(and_(func.month(HoaDon.ngay_nhap) == func.month(thang), KhachHang.id == idKH)).value(
         func.sum(ChiTietHoaDon.don_gia))
 
+
+
+def cart_stats(cart):
+    if cart is None:
+        return 0, 0
+
+    books = cart.values()
+
+    quantity = sum([b['quantity'] for b in books])
+    price = sum([b['don_gia']*b['quantity'] for b in books])
+
+    return quantity, price
+
+
+def read_books(kw=None, from_price=None, to_price=None):
+    books = Sach.query
+    if kw:
+        books = books.filter(Sach.ten_sach.contains(kw))
+
+    if from_price and to_price:
+        books = books.filter(Sach.don_gia.__gt__(from_price),
+                                   Sach.don_gia.__lt__(to_price))
+    return books.all()
+
+
+def get_book_by_Id(book_id):
+    return Sach.query.get(book_id)
+
+
+def add_receipt(cart):
+    if cart:
+        try:
+            receipt = HoaDon(id_khachhang=current_user.id)
+            db.session.add(receipt)
+
+            for p in list(cart.values()):
+                detail = ChiTietHoaDon(id=int(p["id"]),
+                                       id_hoadon=receipt.id,
+                                       don_gia=float(p["don_gia"]),
+                                       so_luong_mua=p["quantity"])
+                db.session.add(detail)
+            db.session.commit()
+
+            return True
+        except :
+            pass
+
+    return False
+
+
+def check_login(username, password):
+    password = str(hashlib.md5(password.strip().encode("utf-8")).hexdigest())
+    return KhachHang.query.filter(KhachHang.username == username,
+                                  KhachHang.password == password).first()
+
+=======
     return tongNo

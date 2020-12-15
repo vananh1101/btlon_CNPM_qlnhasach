@@ -1,40 +1,12 @@
-
-<html lang="en">
-
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="apple-touch-icon" sizes="76x76" href="/static/assets/img/apple-icon.png">
-  <link rel="icon" type="image/png" href="/static/assets/img/favicon.png">
+{% extends 'login.html'%}
 {% block title %}
-  <title>
-    Đăng nhập
-  </title>
-{% endblock title %}
-  <!--     Fonts and icons     -->
-  <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,600,700,800" rel="stylesheet" />
-  <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
-  <!-- Nucleo Icons -->
-  <link href="/static/assets/css/css_main.css" rel="stylesheet" />
-
-  {%  block css %}  {%  endblock css %}
-
-
-</head>
-<body class="">
-  <div class="wrapper">
-    {% block sidebar %}
-      {% include 'sidebar.html' %}
-    {% endblock %}
-    <div class="main-panel">
-{% block body %}
-      <div class="content">
-
-          {% block content %}
-                  <div class="row">
+<title>Đăng nhập admin</title>
+{% endblock  %}
+ {% block content %}
+     <div class="row">
                     <div class="col-md-8">
                       <div class="card">
-                        <form role="form" method="post" action="{{ url_for('route_login') }}">
+                        <form role="form" method="post" action="{{ url_for('route_login_user') }}">
                           <div class="card-header">
                             <h5 class="title">Đăng nhập</h5>
                             <h6 class="card-category">
@@ -65,29 +37,10 @@
                           </div>
                           <div class="card-footer">
                             <button type="submit" name="login" class="btn btn-fill btn-primary">Đăng nhập</button>
-                                Chưa có tài khoản? <a href="{{ url_for('route_register') }}" class="text-primary">Đăng kí ngay</a>
                           </div>
                         </form>
                       </div>
                     </div>
-                  {% endblock content %}
-                </div>
-
-      </div>
-    {% endblock body %}
-
-      {% include 'footer.html' %}
-
-    </div>
-
-  </div>
-
-  {% include 'fixed-plugin.html' %}
-
-  {% include 'scripts.html' %}
-
-  {% include 'scripts-sidebar.html' %}
-
-
-</body>
-
+    {% endblock %}
+ {% block search_toolbar %}
+{% endblock %}

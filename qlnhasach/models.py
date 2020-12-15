@@ -5,6 +5,7 @@ from enum import Enum as UserEnum
 from flask_login import UserMixin
 from datetime import datetime
 from qlnhasach import db
+import sqlite3
 
 
 class QLBase(db.Model):
@@ -44,7 +45,7 @@ class User(QLBase, UserMixin):
 
 
 # BẢNG KHÁCH HÀNG
-class KhachHang(QLBase):
+class KhachHang(QLBase, UserMixin):
     __tablename__ = 'khach_hang'
 
     ho_ten = Column(String(100), nullable=False)

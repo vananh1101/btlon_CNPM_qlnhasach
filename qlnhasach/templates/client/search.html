@@ -1,0 +1,73 @@
+{% extends 'client/home.html'%}
+{% block title %}
+<title>Tìm kiếm </title>
+     <link href="/static/assets/css/style.css" rel="stylesheet" />
+    <link href="/static/assets/css/search.css" rel="stylesheet" />
+    <link href="/static/assets/css/nav.css" rel="stylesheet" />
+{% endblock  %}
+
+{% block body %}
+  <body>
+    <div class="s010">
+      <form>
+        <div class="inner-form">
+          <div class="basic-search">
+            <div class="input-field">
+              <input id="search" type="text" name="kw" placeholder="Nhập tên sách..." />
+              <div class="icon-wrap">
+                <div class="fa fa-search" >
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="advance-search input-group mb-3">
+              <span class="desc"></span>
+            <div class="row" style="margin-left: 150px;">
+                <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <label class="input-group-text" for="inputGroupSelect01">Từ giá</label>
+              </div>
+              <select class="custom-select" id="inputGroupSelect01" name = "from_price">
+                <option value="10000">10,000 VNĐ</option>
+                <option value="20000">20,000 VNĐ</option>
+                <option value="50000">50,000 VNĐ</option>
+                <option value="100000">100,000 VNĐ</option>
+                <option value="200000">200,000 VNĐ</option>
+                <option value="500000">500,000 VNĐ</option>
+                 <option value="1000000">1,000,000 VNĐ</option>
+              </select>
+            </div>
+            </div>
+            <div class="row "style="padding-left: 50px; color: #0a0c0d">
+                 <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <label class="input-group-text" for="inputGroupSelect03">Đến giá</label>
+              </div>
+              <select class="custom-select" id="inputGroupSelect03" name="to_price">
+                <option value="20000">20,000 VNĐ</option>
+                <option value="50000">50,000 VNĐ</option>
+                <option value="100000">100,000 VNĐ</option>
+                <option value="200000">200,000 VNĐ</option>
+                <option value="500000">500,000 VNĐ</option>
+                <option value="1000000">1,000,000 VNĐ</option>
+                <option value="2000000">2,000,000 VNĐ</option>
+              </select>
+            </div>
+            </div>
+              <div class="page-wrapper col"  >
+                 <h2> <a href="{{ url_for("searchkw") }}" class="addtocart" style="margin-left: 500px;" >
+                   Bắt đầu
+                  </a></h2>
+
+            </div>
+          </div>
+
+        </div>
+
+      </form>
+    </div>
+    {% block search %}
+        {% endblock %}
+  </body>
+{% endblock body %}

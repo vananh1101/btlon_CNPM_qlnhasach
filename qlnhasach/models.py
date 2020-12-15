@@ -31,6 +31,7 @@ class User(QLBase, UserMixin):
     avata = Column(String(100))
     user_role = Column(Enum(UserRole), nullable=False)
 
+
     # QUAN HỆ 1-N VỚI BẢNG PHIỂU THU TIỀN
     phieu_thu = relationship('PhieuThuTien', backref='user', lazy=True)
 
@@ -163,12 +164,6 @@ class QuyDinh(QLBase):
     tien_no_toi_da = Column(Float, nullable=False)
     so_luong_ton_sau_ban = Column(Integer, nullable=False)
     tien_thu_khong_vuot_tien_no = Column(Boolean, default=True, nullable=False)
-
-
-def connect():
-    conn = sqlite3.connect("qlnhasachdb")
-    cursor = conn.cursor()
-    return cursor
 
 
 if __name__ == "__main__":

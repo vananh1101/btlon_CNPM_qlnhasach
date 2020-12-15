@@ -1,7 +1,7 @@
 from flask_admin.babel import gettext
 import logging
 from qlnhasach import admin, db, utils
-from qlnhasach.models import UserRole, Sach, PhieuNhapSach, PhieuThuTien, ChiTietPhieuNhap, KhachHang, QuyDinh, User
+from qlnhasach.models import UserRole, Sach, PhieuNhapSach, PhieuThuTien, ChiTietPhieuNhap, KhachHang, QuyDinh
 from flask import redirect, url_for, flash, request
 from flask_admin.contrib.sqla import ModelView
 from flask_admin import BaseView, expose
@@ -34,6 +34,78 @@ class CommonView(NewView):
 
     def is_accessible(self):
             return current_user.is_authenticated and current_user.user_role in self.user_roles
+
+
+class CreateModel(CommonView):
+    @expose('/', methods=["Post"])
+    def create_model(self, form):
+        try:
+            model = self.build_new_instance()
+
+            form.populate_obj(model)
+            idSachNhap = form.data.get('sach').id
+            soLuongNhap = form.data.get('so_luong')
+            minNhap = QuyDinh.query.value(QuyDinh.so_luong_nhap_toi_thieu)
+            maxSachTon = QuyDinh.query.value(QuyDinh.so_luong_ton_toi_thieu)
+            soLuongTon = db.session.query(Sach.so_luong).filter(Sach.id == idSachNhap).value(Sach.so_luong)
+            update = Sach.query.filter(Sach.id == idSachNhap).first()
+            if soLuongNhap >= minNhap and soLuongTon < maxSachTon:
+                update.so_luong += soLuongNhap
+                self.session.add(model)
+                self._on_model_change(form, model, True)
+                self.session.commit()
+            else:
+                flash(gettext('Failed to create record. '), 'danger')
+                self.session.rollback()
+                return False
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                flash(gettext('Failed to create record. %(error)s', error=str(ex)), 'error')
+                log.exception('Failed to create record.')
+
+            self.session.rollback()
+
+            return False
+        else:
+            self.after_model_change(form, model, True)
+
+        return model
+
+
+class ThuTienModel(CommonView):
+    @expose('/', methods=["POST"])
+    def create_model(self, form):
+        try:
+            model = self.build_new_instance()
+
+            form.populate_obj(model)
+            idSachNhap = form.data.get('sach').id
+            soLuongNhap = form.data.get('so_luong')
+            minNhap = QuyDinh.query.value(QuyDinh.so_luong_nhap_toi_thieu)
+            maxSachTon = QuyDinh.query.value(QuyDinh.so_luong_ton_toi_thieu)
+            soLuongTon = db.session.query(Sach.so_luong).filter(Sach.id == idSachNhap).value(Sach.so_luong)
+            update = Sach.query.filter(Sach.id == idSachNhap).first()
+            if soLuongNhap >= minNhap and soLuongTon < maxSachTon:
+                update.so_luong += soLuongNhap
+                self.session.add(model)
+                self._on_model_change(form, model, True)
+                self.session.commit()
+            else:
+                flash(gettext('Failed to create record. '), 'danger')
+                self.session.rollback()
+                return False
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                flash(gettext('Failed to create record. %(error)s', error=str(ex)), 'error')
+                log.exception('Failed to create record.')
+
+            self.session.rollback()
+
+            return False
+        else:
+            self.after_model_change(form, model, True)
+
+        return model
 
 
 class CreateModel(CommonView):

@@ -13,7 +13,7 @@
                 </li>
                 <li class="nav-item"><a class="nav-link" href="{{ url_for('search') }} ">Tìm kiếm</a></li>
                 <li class="nav-item"><a class="nav-link" href="
-                {% if current_user.is_authenticated %}
+                {% if session['costumer'] %}
                    {{ url_for('cart') }}
                  {% else %}
                  {{ url_for('user_login') }}

@@ -1,9 +1,10 @@
-import login as login
+
+from flask import jsonify
 from flask_login import login_user, login_manager, login_required, current_user, logout_user
-from flask import render_template, redirect, request, url_for, session, jsonify, copy_current_request_context
-from qlnhasach import app, models, utils, login
+from flask import render_template, redirect, request, url_for, session
+from qlnhasach import app, models, utils,login
 from qlnhasach.admin import *
-from qlnhasach.models import User, KhachHang, connect
+from qlnhasach.models import User, KhachHang
 import hashlib
 
 
@@ -49,7 +50,6 @@ def user_login():
     return render_template('client/login.html', err_msg=err_msg)
 
 
-
 @app.route('/admin-logged')
 @login_required
 def admin_log():
@@ -76,7 +76,7 @@ def route_register():
 
 
         #Kiểm tra nếu số điện thoại đã được đăng kí
-        khach = KhachHang.query.filter_by(dien_thoai=phone).first()
+        khach = KhachHang.query.filter_by(dienthoai=phone).first()
         if khach:
             return render_template('register.html',
                                    msg='Số điện thoại đã được đăng kí',
@@ -101,6 +101,7 @@ def route_register():
                            success=True)
     else:
         return render_template( 'register.html')
+
 
 
 @app.route("/books/details/<int:book_id>")
@@ -208,6 +209,7 @@ def logout():
 
     return redirect(url_for("home"))
 
+
 @app.login_manager.unauthorized_handler
 def unauthorized_handler():
     return render_template('page-403.html'), 403
@@ -229,6 +231,7 @@ def home():
     return render_template('client/home.html', dssach=dssach)
 
 
+
 @login.user_loader
 def get_user(user_id):
     return User.query.get(user_id)
@@ -241,6 +244,7 @@ def nhapsach():
     soluongnhap = int(request.form.get['so_luong'])
     sach = utils.nhap_sach(idSachNhap=idphieunhap,soLuongNhap=soluongnhap)
     return redirect('/admin')
+
 
 
 if __name__ == "__main__":

@@ -1,4 +1,3 @@
-//check
 
 var password = document.getElementById("re_password")
   , confirm_password = document.getElementById("re_confirm_password");

@@ -1,9 +1,30 @@
+
 from qlnhasach.models import Sach, QuyDinh, HoaDon, ChiTietHoaDon
-import hashlib
+from qlnhasach.models import Sach, QuyDinh
+from flask import request
+import json, hashlib
 from qlnhasach.models import KhachHang
 from qlnhasach import db
 from flask_login import current_user
 import sqlite3
+
+
+def add_costumer(name, username, password, dienthoai, diachi, ngaysinh):
+    password = str(hashlib.md5(password.encode('utf-8')).hexdigest())
+    u = KhachHang(name=name,
+                  diachi=diachi,
+             username=username,
+             password=password,
+             dienthoai=dienthoai,
+                  ngaysinh=ngaysinh)
+    try:
+        db.session.add(u)
+        db.session.commit()
+
+        return True
+    except Exception as ex:
+        print(ex)
+        return False
 
 
 def read_data():
@@ -95,3 +116,4 @@ def check_login(username, password):
     password = str(hashlib.md5(password.strip().encode("utf-8")).hexdigest())
     return KhachHang.query.filter(KhachHang.username == username,
                                   KhachHang.password == password).first()
+

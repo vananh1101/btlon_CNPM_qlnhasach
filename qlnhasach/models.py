@@ -124,9 +124,6 @@ class PhieuThuTien(QLBase):
     # KHOÁ NGOẠI VỚI BẢNG KHÁCH HÀNG
     id_khachhang = Column(Integer, ForeignKey('khach_hang.id'), nullable=False)
 
-    # # KHOÁ NGOẠI VỚI BẢNG HOÁ ĐƠN
-    # id_hoadon = Column(Integer, ForeignKey('hoa_don.id'), nullable=False)
-
     def __int__(self):
         return self.id
 
@@ -170,18 +167,7 @@ class QuyDinh(QLBase):
     tien_no_toi_da = Column(Float, nullable=False)
     so_luong_ton_sau_ban = Column(Integer, nullable=False)
     tien_thu_khong_vuot_tien_no = Column(Boolean, default=True, nullable=False)
-
     id_admin = Column(Integer, ForeignKey('user.id'), nullable=False)
-
-
-# # BẢNG DANH SÁCH NỢ CỦA KHÁCH HÀNG
-# class DanhSachNo(QLBase):
-#     __tablename__ = 'danh_sach_KH_no'
-#
-#     tong_no = Column(Float,nullable=False)
-#
-#     # KHOÁ NGOẠI VỚI BẢNG KHÁCH HÀNG (1-N)
-#     id_khach_hang = Column(Integer, ForeignKey('khach_hang.id'), nullable=False)
 
 
 if __name__ == "__main__":

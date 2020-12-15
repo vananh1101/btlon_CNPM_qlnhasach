@@ -169,8 +169,6 @@ class BaoCaoTon(BaoCaoView):
         tongXuat = None
         if request.method == 'POST':
             thang = int(request.form.get("month"))
-            # import pdb
-            # pdb.set_trace()
             tenSach = utils.du_lieu_sach()
             tonDau, tonCuoi, tongNhap, tongXuat = utils.du_lieu_sach_ton(thang=thang)
             return self.render('admin/baocaohangton.html', tenSach=tenSach, tonDau=tonDau, tonCuoi=tonCuoi,
@@ -194,6 +192,7 @@ admin.add_view(CreateModel(ChiTietPhieuNhap, db.session, name="Chi tiết phiế
 admin.add_view(ThuTienModel(PhieuThuTien, db.session, name="Phiếu thu tiền",
                             user_roles=[UserRole.ADMIN, UserRole.Thu_ngan]))
 admin.add_view(CommonView(HoaDon, db.session, name="Hoá đơn", user_roles=[UserRole.ADMIN, UserRole.Thu_ngan]))
+admin.add_view(CommonView(ChiTietHoaDon, db.session, name="Chi tiết hoá đơn", user_roles=[UserRole.ADMIN, UserRole.Thu_ngan]))
 admin.add_view(BaoCaoTon(name='Báo cáo tồn'))
 admin.add_view(BaoCaoCongNo(name='Báo cáo công nợ'))
 

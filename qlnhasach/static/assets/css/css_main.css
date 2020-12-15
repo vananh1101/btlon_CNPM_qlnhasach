@@ -20966,6 +20966,6 @@ Copyright (c) 2015 Daniel Eden
     color:#ffffff;
 }
 
-.select2-results li,  option {
+.select2-results li, .form-control option {
     color: black;
 }

@@ -4,6 +4,7 @@ function getChart(tenSach,tonDau,tonCuoi,tongNhap,tongXuat) {
 
     var ctx = document.getElementById('myChart').getContext('2d');
     var myChart = new Chart(ctx, {
+
         type: 'bar',
         data: {
             labels: tenSach,
@@ -109,6 +110,7 @@ function baoCaoNo(dsKhachHang,noDau,noCuoi,tongTra,tongNo) {
 
     var ctx = document.getElementById('myChart').getContext('2d');
     var myChart = new Chart(ctx, {
+
         type: 'bar',
         data: {
             labels: dsKhachHang,

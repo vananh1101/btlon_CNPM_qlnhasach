@@ -54,8 +54,7 @@ def cart_stats(cart):
     return quantity, price
 
 
-def read_books(kw=None,
-                  from_price=None, to_price=None):
+def read_books(kw=None, from_price=None, to_price=None):
     books = Sach.query
 
     if kw:
@@ -64,7 +63,6 @@ def read_books(kw=None,
     if from_price and to_price:
         books = books.filter(Sach.don_gia.__gt__(from_price),
                                    Sach.don_gia.__lt__(to_price))
-
     return books.all()
 
 

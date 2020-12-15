@@ -15,14 +15,30 @@ def route_login():
         if user:
             login_user(user=user)
             return redirect('/admin')
-        costumer = KhachHang.query.filter(KhachHang.username == '#KH_'+username, KhachHang.password == password).first()
+        else:
+            return render_template('login.html', msg='Tài khoản hoặc mật khẩu không đúng, hãy thử lại')
+    return render_template('login.html')
+
+
+@app.route("/login_user", methods=['get', 'post'])
+def route_login_user():
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = str(hashlib.md5(request.form.get("password").strip().encode("utf-8")).hexdigest())
+        costumer = KhachHang.query.filter(KhachHang.username == '#KH_' + username,
+                                              KhachHang.password == password).first()
         if costumer:
-            login_user(costumer,remember=True)
+            login_user(costumer)
             return redirect('/')
         else:
             return render_template('login.html', msg='Tài khoản hoặc mật khẩu không đúng, hãy thử lại')
     return render_template('login.html')
 
+
+@app.route('/admin-logged')
+@login_required
+def admin_log():
+    return redirect('/admin')
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -51,7 +67,7 @@ def route_register():
                                    msg='Số điện thoại đã được đăng kí',
                                    success=False)
 
-        if phone.isdigit():
+        if not phone.isdigit:
             return render_template('register.html',
                                    msg='Số điện thoại không hợp lệ',
                                    success=False)
@@ -78,13 +94,21 @@ def book_detail(book_id):
     return render_template('client/book_details.html', sach = book)
 
 
-@app.route('/search/details/"')
+@app.route('/search/"')
+def search():
+    return render_template('client/search.html')
+
+@app.route('/search/details"')
 def searchkw():
     kw = request.args.get("kw")
     from_price = request.args.get("from_price")
     to_price = request.args.get("to_price")
-    dssach = utils.read_books(kw, from_price, to_price)
-    return render_template('client/search.html',dssach)
+
+    dssach = utils.read_books(
+                                   kw=kw,
+                                   from_price=from_price,
+                                   to_price=to_price)
+    return render_template('client/search.html', dssach = dssach)
 
 
 @app.route('/api/cart', methods=['post'])
@@ -176,10 +200,6 @@ def not_found_error(error):
 def home():
     dssach = utils.read_data()
     return render_template('client/home.html', dssach=dssach)
-
-@app.route('/search')
-def search():
-    return render_template('client/search.html')
 
 
 @login.user_loader

@@ -1,13 +1,9 @@
 from sqlalchemy import func, and_
 
-from qlnhasach.models import Sach, QuyDinh, ChiTietPhieuNhap, PhieuNhapSach, KhachHang, ChiTietHoaDon, HoaDon
+from qlnhasach.models import Sach, QuyDinh, ChiTietPhieuNhap, PhieuNhapSach, KhachHang, ChiTietHoaDon, HoaDon, \
+    PhieuThuTien
 import hashlib
 from qlnhasach import db
-
-
-def read_data():
-    dssach = Sach.query
-    return dssach.all()
 
 
 def add_costumer(name, username, password, dienthoai, diachi, ngaysinh, email):
@@ -29,8 +25,8 @@ def add_costumer(name, username, password, dienthoai, diachi, ngaysinh, email):
         return False
 
 
-def du_lieu_ten_sach():
-    dsTenSach = read_data()
+def du_lieu_sach():
+    dsTenSach = db.session.query(Sach.id, Sach.ten_sach).all()
     tenSach = []
     if dsTenSach:
         for sach in dsTenSach:
@@ -38,34 +34,27 @@ def du_lieu_ten_sach():
     return tenSach
 
 
-def doc_dsKH():
-    dsKH = KhachHang.query
-    return dsKH.all()
-
-
-def du_lieu_ten_khach():
-    dsKH = doc_dsKH()
+def du_lieu_khach_hang():
+    dsKH = db.session.query(KhachHang.username,KhachHang.id).all()
     dsKhach = []
     if dsKH:
         for kh in dsKH:
-            dsKhach.append(kh.ho_ten)
+            dsKhach.append(kh.username)
     return dsKhach
 
 
 def du_lieu_sach_ton(thang):
-    dsTenSach = du_lieu_ten_sach()
+    dsTenSach = du_lieu_sach()
     tongNhap = []
     tonDau = []
     tonCuoi = []
     tongXuat = []
 
-    dsNhap = db.session.query(Sach.ten_sach,func.sum(ChiTietPhieuNhap.so_luong)) \
+    dsNhap = db.session.query(Sach.ten_sach, func.sum(ChiTietPhieuNhap.so_luong)) \
         .join(PhieuNhapSach, PhieuNhapSach.id == ChiTietPhieuNhap.id_phieu) \
         .join(Sach, Sach.id == ChiTietPhieuNhap.id_sachnhap) \
         .filter(func.month(PhieuNhapSach.ngay_nhap) == thang).group_by(Sach.id).all()
-
     if dsNhap:
-
         for sach in dsNhap:
             tongNhap.append(int(sach[1]))
 
@@ -77,50 +66,23 @@ def du_lieu_sach_ton(thang):
     if dsXuat:
         for sach in dsXuat:
             tongXuat.append(int(sach[0]))
-    for ten in dsTenSach:
-        # dsNhap = db.session.query(Sach.ten_sach, func.sum(ChiTietPhieuNhap.so_luong)) \
-        #     .join(PhieuNhapSach, PhieuNhapSach.id == ChiTietPhieuNhap.id_phieu) \
-        #     .join(Sach, Sach.id == ChiTietPhieuNhap.id_sachnhap) \
-        #     .filter(and_(func.month(PhieuNhapSach.ngay_nhap) == thang, Sach.ten_sach.like(ten))) \
-        #     .value(func.sum(ChiTietPhieuNhap.so_luong))
 
-        # dsXuat = db.session.query(func.sum(ChiTietHoaDon.so_luong_mua)) \
-        #     .join(HoaDon, HoaDon.id == ChiTietHoaDon.id_hoadon).join(Sach, Sach.id == ChiTietHoaDon.id_sach) \
-        #     .filter(and_(func.month(HoaDon.ngay_nhap) == thang, Sach.ten_sach.like(ten))) \
-        #     .value(func.sum(ChiTietHoaDon.so_luong_mua))
-
-        dsTonDau = db.session.query(Sach.ten_sach, ChiTietPhieuNhap.so_luong, Sach.so_luong) \
+    for sach in dsTenSach:
+        dsTon = db.session.query(ChiTietPhieuNhap.so_luong, Sach.so_luong) \
             .join(PhieuNhapSach, PhieuNhapSach.id == ChiTietPhieuNhap.id_phieu) \
             .join(Sach, Sach.id == ChiTietPhieuNhap.id_sachnhap) \
-            .filter(and_(func.month(PhieuNhapSach.ngay_nhap) == thang, Sach.ten_sach.like(ten))) \
-            .order_by(PhieuNhapSach.ngay_nhap).first()
+            .filter(and_(func.month(PhieuNhapSach.ngay_nhap) == thang, Sach.ten_sach.like(sach))) \
+            .order_by(PhieuNhapSach.ngay_nhap).all()
 
-        dsTonCuoi = db.session.query(Sach.ten_sach, ChiTietPhieuNhap.so_luong, Sach.so_luong) \
-            .join(PhieuNhapSach, PhieuNhapSach.id == ChiTietPhieuNhap.id_phieu) \
-            .join(Sach, Sach.id == ChiTietPhieuNhap.id_sachnhap) \
-            .filter(and_(func.month(PhieuNhapSach.ngay_nhap) == thang, Sach.ten_sach.like(ten))) \
-            .order_by(PhieuNhapSach.ngay_nhap.desc()).first()
-
-        if dsTonDau:
-            tonDau.append(dsTonDau[2])
-        if dsTonCuoi:
-            tonCuoi.append(dsTonCuoi[2])
-        # if dsNhap:
-        #     tongNhap.append(int(dsNhap))
-        # if dsXuat:
-        #     tongXuat.append(int(dsXuat))
+        if dsTon:
+            tonDau.append(dsTon[0][1])
+            tonCuoi.append(dsTon[len(dsTon) - 1][1])
 
     return tonDau, tonCuoi, tongNhap, tongXuat
 
 
-def quy_dinh_nhap_sach():
-    minNhap = QuyDinh.query.value(QuyDinh.so_luong_nhap_toi_thieu)
-    maxSachTon = QuyDinh.query.value(QuyDinh.so_luong_ton_toi_thieu)
-    return minNhap, maxSachTon
-
-
 def du_lieu_kh_no(thang):
-    dsKH = du_lieu_ten_khach()
+    dsKH = du_lieu_khach_hang()
     tongTra = []
     noDau = []
     noCuoi = []
@@ -129,34 +91,44 @@ def du_lieu_kh_no(thang):
     dsNo = db.session.query(func.sum(ChiTietHoaDon.don_gia)) \
         .join(HoaDon, HoaDon.id == ChiTietHoaDon.id_hoadon) \
         .join(KhachHang, KhachHang.id == HoaDon.id_khachhang) \
-        .filter(func.month(HoaDon.ngay_nhap) == 9).group_by(KhachHang.id).all()
+        .filter(func.month(HoaDon.ngay_nhap) == thang).group_by(KhachHang.id).all()
+    if dsNo:
+        for kh in dsNo:
+            tongNo.append(float(kh[0]))
 
-    for ten in dsKH:
+    dsTra = db.session.query(func.sum(PhieuThuTien.tong_tien_thu)) \
+        .join(KhachHang, KhachHang.id == PhieuThuTien.id_khachhang) \
+        .filter(func.month(PhieuThuTien.ngay_thu_tien) == thang).group_by(KhachHang.id).all()
+    if dsTra:
+        for kh in dsTra:
+            tongTra.append(float(kh[0]))
 
-        dsTra = db.session.query(func.sum(ChiTietHoaDon.so_luong_mua)) \
-            .join(HoaDon, HoaDon.id == ChiTietHoaDon.id_hoadon).join(Sach, Sach.id == ChiTietHoaDon.id_sach) \
-            .filter(and_(func.month(HoaDon.ngay_nhap) == thang, Sach.ten_sach.like(ten))) \
-            .value(func.sum(ChiTietHoaDon.so_luong_mua))
-
-        dsNoDau = db.session.query(Sach.ten_sach, ChiTietPhieuNhap.so_luong, Sach.so_luong) \
-            .join(PhieuNhapSach, PhieuNhapSach.id == ChiTietPhieuNhap.id_phieu) \
-            .join(Sach, Sach.id == ChiTietPhieuNhap.id_sachnhap) \
-            .filter(and_(func.month(PhieuNhapSach.ngay_nhap) == thang, Sach.ten_sach.like(ten))) \
-            .order_by(PhieuNhapSach.ngay_nhap).first()
-
-        dsNoCuoi = db.session.query(Sach.ten_sach, ChiTietPhieuNhap.so_luong, Sach.so_luong) \
-            .join(PhieuNhapSach, PhieuNhapSach.id == ChiTietPhieuNhap.id_phieu) \
-            .join(Sach, Sach.id == ChiTietPhieuNhap.id_sachnhap) \
-            .filter(and_(func.month(PhieuNhapSach.ngay_nhap) == thang, Sach.ten_sach.like(ten))) \
-            .order_by(PhieuNhapSach.ngay_nhap.desc()).first()
-
-        if dsNoDau:
-            noDau.append(dsNoDau[2])
-        if dsNoCuoi:
-            noCuoi.append(dsNoCuoi[2])
-        if dsTra:
-            tongTra.append(int(dsTra))
+    for kh in dsKH:
+        # import pdb
+        # pdb.set_trace()
+        dsNo = db.session.query(ChiTietHoaDon.don_gia,ChiTietHoaDon.so_luong_mua) \
+            .join(HoaDon, HoaDon.id == ChiTietHoaDon.id_hoadon) \
+            .join(KhachHang, KhachHang.id == HoaDon.id_khachhang) \
+            .filter(and_(func.month(HoaDon.ngay_nhap) == thang, KhachHang.username.like(kh) )) \
+            .order_by(HoaDon.ngay_nhap).all()
         if dsNo:
-            tongNo.append(int(dsNo))
+            noDau.append(dsNo[0][0])
+            noCuoi.append(dsNo[len(dsNo)-1][0])
 
     return noDau, noCuoi, tongTra, tongNo
+
+
+def quy_dinh_nhap_sach():
+    minNhap = QuyDinh.query.value(QuyDinh.so_luong_nhap_toi_thieu)
+    maxSachTon = QuyDinh.query.value(QuyDinh.so_luong_ton_toi_thieu)
+    return minNhap, maxSachTon
+
+
+def chi_tiet_tien_no_KH(idKH, thang):
+    tongNo = db.session.query(func.sum(ChiTietHoaDon.don_gia)) \
+        .join(HoaDon, HoaDon.id == ChiTietHoaDon.id_hoadon) \
+        .join(KhachHang, HoaDon.id_khachhang == KhachHang.id) \
+        .filter(and_(func.month(HoaDon.ngay_nhap) == func.month(thang), KhachHang.id == idKH)).value(
+        func.sum(ChiTietHoaDon.don_gia))
+
+    return tongNo

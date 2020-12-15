@@ -39,6 +39,11 @@ class CommonView(NewView):
         return current_user.is_authenticated and current_user.user_role in self.user_roles
 
 
+class DanhSachKHView(CommonView):
+    can_edit = False
+    can_create = False
+
+
 class CreateModel(CommonView):
     @expose('/', methods=["Post"])
     def create_model(self, form):
@@ -56,13 +61,13 @@ class CreateModel(CommonView):
                 self._on_model_change(form, model, True)
                 self.session.commit()
             else:
-                flash(gettext('Failed to create record. '), 'danger')
+                flash(gettext('THÊM PHIẾU NHẬP SÁCH THẤT BẠI! (SỐ SÁCH NHẬP >= 150 VÀ LƯỢNG TỒN <300) '), 'danger')
                 self.session.rollback()
                 return False
         except Exception as ex:
             if not self.handle_view_exception(ex):
-                flash(gettext('Failed to create record. %(error)s', error=str(ex)), 'error')
-                log.exception('Failed to create record.')
+                flash(gettext('THÊM PHIẾU NHẬP SÁCH THẤT BẠI!. %(error)s', error=str(ex)), 'error')
+                log.exception('THÊM PHIẾU NHẬP SÁCH THẤT BẠI!.')
 
             self.session.rollback()
 
@@ -82,21 +87,18 @@ class ThuTienModel(CommonView):
             form.populate_obj(model)
             idKH = form.data.get('khach_hang').id
             tongTienThu = float(form.data.get('tong_tien_thu'))
+            ngayLapPhieu = form.data.get('ngay_thu_tien')
             suDungQD = QuyDinh.query.value(QuyDinh.tien_thu_khong_vuot_tien_no)
 
             if suDungQD:
-                tongNo = db.session.query(HoaDon.id, func.sum(ChiTietHoaDon.don_gia)) \
-                    .join(ChiTietHoaDon, ChiTietHoaDon.id_hoadon == HoaDon.id) \
-                    .filter(and_(HoaDon.id_khachhang == idKH)) \
-                    .value(func.sum(ChiTietHoaDon.don_gia))
+                tongNo = utils.chi_tiet_tien_no_KH(idKH=idKH, thang=ngayLapPhieu)
 
                 if tongTienThu <= tongNo:
-                    # tongNo -= tongTienThu
                     self.session.add(model)
                     self._on_model_change(form, model, True)
                     self.session.commit()
                 else:
-                    flash(gettext('Failed to create record. '), 'danger')
+                    flash(gettext('THÊM PHIẾU THU TIỀN THẤT BẠI! (SỐ TIỀN THU KHÔNG ĐƯỢC HƠN TỔNG NỢ) '), 'danger')
                     self.session.rollback()
                     return False
             else:
@@ -105,8 +107,8 @@ class ThuTienModel(CommonView):
                 self.session.commit()
         except Exception as ex:
             if not self.handle_view_exception(ex):
-                flash(gettext('Failed to create record. %(error)s', error=str(ex)), 'error')
-                log.exception('Failed to create record.')
+                flash(gettext('GHI THẤT BAI! MỜI KIỂM TRA LẠI. %(error)s', error=str(ex)), 'error')
+                log.exception('GHI THẤT BAI! MỜI KIỂM TRA LẠI.')
 
             self.session.rollback()
 
@@ -138,9 +140,23 @@ class BaoCaoView(BaseView):
 
 
 class BaoCaoCongNo(BaoCaoView):
-    @expose("/")
+    @expose("/", methods=['POST', 'GET'])
     def index(self):
-        return redirect('baocaono.html')
+        dsKhachHang = None
+        noDau = None
+        noCuoi = None
+        tongNo = None
+        tongTra = None
+        if request.method == 'POST':
+            # import pdb
+            # pdb.set_trace()
+            dsKhachHang = utils.du_lieu_khach_hang()
+            thang = int(request.form.get("month"))
+            noDau, noCuoi, tongTra, tongNo = utils.du_lieu_kh_no(thang=thang)
+            return self.render('admin/baocaono.html', dsKhachHang=dsKhachHang, noDau=noDau
+                               , noCuoi=noCuoi, tongTra=tongTra, tongNo=tongNo)
+        return self.render('admin/baocaono.html', dsKhachHang=dsKhachHang, noDau=noDau
+                           , noCuoi=noCuoi, tongTra=tongTra, tongNo=tongNo)
 
 
 class BaoCaoTon(BaoCaoView):
@@ -155,7 +171,7 @@ class BaoCaoTon(BaoCaoView):
             thang = int(request.form.get("month"))
             # import pdb
             # pdb.set_trace()
-            tenSach = utils.du_lieu_ten_sach()
+            tenSach = utils.du_lieu_sach()
             tonDau, tonCuoi, tongNhap, tongXuat = utils.du_lieu_sach_ton(thang=thang)
             return self.render('admin/baocaohangton.html', tenSach=tenSach, tonDau=tonDau, tonCuoi=tonCuoi,
                                tongNhap=tongNhap,
@@ -173,8 +189,6 @@ admin.add_view(CreateModel(PhieuNhapSach, db.session, name="Phiếu nhập sách
                            user_roles=[UserRole.ADMIN, UserRole.Thu_kho]))
 admin.add_view(CreateModel(ChiTietPhieuNhap, db.session, name="Chi tiết phiếu nhập sách",
                            user_roles=[UserRole.ADMIN, UserRole.Thu_kho]))
-# admin.add_view(CommonView(Sach, db.session, name="Thêm sách mới", user_roles=[UserRole.ADMIN, UserRole.Thu_kho]))
-
 
 # VIEW ADMIN VÀ THU NGÂN
 admin.add_view(ThuTienModel(PhieuThuTien, db.session, name="Phiếu thu tiền",
@@ -184,8 +198,8 @@ admin.add_view(BaoCaoTon(name='Báo cáo tồn'))
 admin.add_view(BaoCaoCongNo(name='Báo cáo công nợ'))
 
 # VIEW CHUNG
-admin.add_view(CommonView(KhachHang, db.session, name="Danh sách khách hàng",
-                          user_roles=[UserRole.ADMIN, UserRole.Thu_ngan, UserRole.Thu_kho]))
+admin.add_view(DanhSachKHView(KhachHang, db.session, name="Danh sách khách hàng",
+                              user_roles=[UserRole.ADMIN, UserRole.Thu_ngan, UserRole.Thu_kho]))
 admin.add_view(TraCuu(Sach, db.session, name='Danh sách sách',
                       user_roles=[UserRole.ADMIN, UserRole.Thu_ngan, UserRole.Thu_kho]))
 admin.add_view(LogoutView(name="Đăng xuất"))

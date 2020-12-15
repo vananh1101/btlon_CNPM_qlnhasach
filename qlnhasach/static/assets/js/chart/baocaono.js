@@ -1,16 +1,16 @@
-function getChart(tenSach,tonDau,tonCuoi,tongNhap,tongXuat) {
-    tenSach = tenSach.substring(1,tenSach.length-1);
-    tenSach = tenSach.split(",");
+function getChart(khachHang,noDau,noCuoi,tongTra,tongNo) {
+    khachHang = khachHang.substring(1,tenSach.length-1);
+    khachHang = khachHang.split(",");
 
     var ctx = document.getElementById('myChart').getContext('2d');
     var myChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: tenSach,
+            labels: khachHang,
             datasets: [
                 {
-                    label:'Tồn đầu' ,
-                    data: tonDau,
+                    label:'Nợ đầu' ,
+                    data: noDau,
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.2)',
                         'rgba(54, 162, 235, 0.2)',
@@ -29,8 +29,8 @@ function getChart(tenSach,tonDau,tonCuoi,tongNhap,tongXuat) {
                     ],
                     borderWidth: 1
                 },{
-                    label:'Tồn cuối' ,
-                    data: tonCuoi,
+                    label:'Nợ cuối' ,
+                    data: noCuoi,
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.2)',
                         'rgba(54, 162, 235, 0.2)',
@@ -49,8 +49,8 @@ function getChart(tenSach,tonDau,tonCuoi,tongNhap,tongXuat) {
                     ],
                     borderWidth: 1
                 },{
-                    label:'Tổng nhập' ,
-                    data: tongNhap,
+                    label:'Tổng trả' ,
+                    data: tongTra,
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.2)',
                         'rgba(54, 162, 235, 0.2)',
@@ -69,8 +69,8 @@ function getChart(tenSach,tonDau,tonCuoi,tongNhap,tongXuat) {
                     ],
                     borderWidth: 1
                 },{
-                    label:'Tổng xuất' ,
-                    data: tongXuat,
+                    label:'Tổng nợ' ,
+                    data: tongNo,
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.2)',
                         'rgba(54, 162, 235, 0.2)',
